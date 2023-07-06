@@ -180,7 +180,7 @@ PV as (
 	left join "lv-prepackage".app_lv.contact_phones cph on cph.contact_id = c.id
 	left join "lv-prepackage".app_lv.contact_mobile_phones cmp on cmp.contact_id = c.id
 	left join "lv-prepackage".app_lv.company_phones comph on comph.ref_id = com.phone_ref
-	where date_add('day', 180, v.date + INTERVAL) > NOW()
+	where date_add('day', 180, v.date) > NOW()
 )
 select 
 	PV.ext_contact_id
