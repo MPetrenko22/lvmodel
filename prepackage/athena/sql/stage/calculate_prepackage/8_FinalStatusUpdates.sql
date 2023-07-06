@@ -11,4 +11,5 @@ using
 		group by c.list_id
 	) s
 on (t.list_id = s.list_id and t.status = 0)
-when matched then update set prepackage_contact_count = s.cnt, status = 1, processed_at = NOW();
+when matched then update set prepackage_contact_count = s.cnt, status = 1, processed_at = NOW()
+;
