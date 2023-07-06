@@ -43,7 +43,8 @@ with AA as (
 )
 select cid, list_id, session_id, null, null, null, max(country), max(a_country), max(state), max(a_state),max(job_level),max(job_area),max(job_function),max(industry),max(a_industry),max(employee),max(a_employee), 0
 from AA 
-group by cid, list_id, session_id, null, null, null;
+group by cid, list_id, session_id, null, null, null
+;
 
 
 
@@ -93,4 +94,5 @@ when matched then update set
 							a_state = if(s.state_mask = 51, 0, a_state),
 							industry = if(s.industry_mask = 24, 0, industry),
 							a_industry = if(s.industry_mask = 24, 0, a_industry),
-							status = 1;
+							status = 1
+;
