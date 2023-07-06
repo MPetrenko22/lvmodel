@@ -9,10 +9,10 @@ insert into lvmodel_stage.m_pre_itbf_approved_new_collection
 with LG_TIT as (
 	select nc.contact_id , nc.ext_contact_id , c.previous_ov_date 
 	from lvmodel_stage.m_pre_itbf_contact_new_collection nc
-	inner join "lv-prepackage-stage".app_lv.contacts c on c.id = nc.contact_id 
+	inner join "lv-prepackage-stage".lv_stage_hotfix.contacts c on c.id = nc.contact_id 
 	where  nc.list_id = ?
 		and c.previous_ov_date > DATE('2001-01-01')
-		and DATE(c.previous_ov_date + INTERVAL '180' day) > NOW()
+		and date_add('day', 180, c.previous_ov_date) > NOW()
 ),
 APR_TIT as (
 	select nc.contact_id , nc.ext_contact_id , h.date_approve as title_date_approve
@@ -23,7 +23,7 @@ APR_TIT as (
 LG_ADR as (
 	select nc.contact_id , nc.ext_contact_id , c.address_date
 	from lvmodel_stage.m_pre_itbf_contact_new_collection nc
-	inner join "lv-prepackage-stage".app_lv.contacts c on c.id = nc.contact_id
+	inner join "lv-prepackage-stage".lv_stage_hotfix.contacts c on c.id = nc.contact_id
 	where  nc.list_id = ?
 		and c.address_date > DATE('2001-01-01')
 ),
@@ -37,11 +37,11 @@ APR_ADR as (
 LG_EMP as (
 	select nc.contact_id , nc.ext_contact_id , com.id as company_id, com.employee_date
 	from lvmodel_stage.m_pre_itbf_contact_new_collection nc
-	inner join "lv-prepackage-stage".app_lv.contacts c on c.id = nc.contact_id 
-	inner join "lv-prepackage-stage".app_lv.companies com on com.id = c.company_id
+	inner join "lv-prepackage-stage".lv_stage_hotfix.contacts c on c.id = nc.contact_id 
+	inner join "lv-prepackage-stage".lv_stage_hotfix.companies com on com.id = c.company_id
 	where  nc.list_id = ?
 		and com.employee_date > DATE('2001-01-01')
-		and DATE(com.employee_date + INTERVAL '360' day)  > NOW()
+		and date_add('day', 360, com.employee_date)  > NOW()
 ),
 APR_EMP as (
 	select nc.contact_id , nc.ext_contact_id , h.date_approve as employee_date_approve
