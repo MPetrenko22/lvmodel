@@ -12,7 +12,7 @@ with LG_TIT as (
 	inner join "lv-prepackage".app_lv.contacts c on c.id = nc.contact_id 
 	where  nc.list_id = ?
 		and c.previous_ov_date > DATE('2001-01-01')
-		and DATE(c.previous_ov_date + INTERVAL '180' day) > NOW()
+		and date_add('day', 180, c.previous_ov_date) > NOW()
 ),
 APR_TIT as (
 	select nc.contact_id , nc.ext_contact_id , h.date_approve as title_date_approve
@@ -41,7 +41,7 @@ LG_EMP as (
 	inner join "lv-prepackage".app_lv.companies com on com.id = c.company_id
 	where  nc.list_id = ?
 		and com.employee_date > DATE('2001-01-01')
-		and DATE(com.employee_date + INTERVAL '360' day)  > NOW()
+		and date_add('day', 360, com.employee_date)  > NOW()
 ),
 APR_EMP as (
 	select nc.contact_id , nc.ext_contact_id , h.date_approve as employee_date_approve
