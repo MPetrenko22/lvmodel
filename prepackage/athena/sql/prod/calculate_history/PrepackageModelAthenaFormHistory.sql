@@ -1,6 +1,7 @@
 
 /* Clean contact history table before new load */
-delete from lvmodel.m_pre_itbf_contact_history_table;
+delete from lvmodel.m_pre_itbf_contact_history_table
+;
 
 
 /* Load contact history datea */
@@ -139,7 +140,8 @@ WHERE
 /* Update country mapping at contact history  - different name into one standart USA */
 UPDATE lvmodel.m_pre_itbf_contact_history_table 
 SET "value" = 'USA'
-WHERE "value" IN ( 'Unated State', 'United States', 'Unated States', 'US') AND attribute_name IN ('country','a_country');
+WHERE "value" IN ( 'Unated State', 'United States', 'Unated States', 'US') AND attribute_name IN ('country','a_country')
+;
 
 
 
@@ -147,7 +149,8 @@ WHERE "value" IN ( 'Unated State', 'United States', 'Unated States', 'US') AND a
 
 
 /* Clean PV statuses history table */
-delete from lvmodel.m_pre_itbf_pv_history;
+delete from lvmodel.m_pre_itbf_pv_history
+;
 
 
 /* Load PV history */
@@ -197,7 +200,8 @@ where PV.rn = 1
 
 
 /* Clean Approve history table  */
-delete from lvmodel.m_pre_itbf_approve_history ;
+delete from lvmodel.m_pre_itbf_approve_history
+;
 
 
 /* Load Approve history */
