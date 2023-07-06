@@ -23,7 +23,8 @@ FROM "lv-prepackage".app_lv.campaign_requirement_options q
 INNER JOIN "lv-prepackage".app_lv.lists l on l.campaign_id = q.campaign_id
 INNER JOIN lvmodel.m_pre_itbf_new_list_to_check j on j.list_id = l.id and j.status = 0
 where q.is_latest = cast(1 as boolean)
-	and j.list_id = ?;
+	and j.list_id = ?
+;
 
 
 
@@ -51,4 +52,5 @@ when matched then update set
 							a_employee = if(s.skip_employee = 0, 0, a_employee),
 							industry = if(s.skip_industry = 0, 0, industry),
 							a_industry = if(s.skip_industry = 0, 0, a_industry),
-							status = 2;
+							status = 2
+;
