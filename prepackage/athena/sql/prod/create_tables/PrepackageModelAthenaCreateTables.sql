@@ -1,28 +1,6 @@
-/*
- * 
- * CREATE TABLE lvmodel.m_name
 
-( etl_created TIMESTAMP(3), a string, b string, c bigint)
-
-LOCATION 's3://lvprepackage-eu/iceberg/'
-
-TBLPROPERTIES (
-
-'table_type'='ICEBERG',
-
-'format'='parquet',
-
-'write_target_data_file_size_bytes'='717707000'
-
-)
-*/
-
-
-
-
-
-
-drop table lvmodel.m_pre_itbf_campaign_requirement_options;
+drop table lvmodel.m_pre_itbf_campaign_requirement_options
+;
 
 CREATE TABLE lvmodel.m_pre_itbf_campaign_requirement_options (
 	id int, 
@@ -39,18 +17,21 @@ CREATE TABLE lvmodel.m_pre_itbf_campaign_requirement_options (
 	status int
 )
 location 's3://lvprepackage-eu/iceberg/'
-tblproperties('table_type' = 'ICEBERG','format'='parquet','vacuum_max_snapshot_age_seconds'='259200');
+tblproperties('table_type' = 'ICEBERG','format'='parquet','vacuum_max_snapshot_age_seconds'='259200')
+;
 
 
 
 
-delete from lvmodel.app_lv_campaign_requirement_options;
+delete from lvmodel.app_lv_campaign_requirement_options
+;
 
 
 
 
 
-drop table lvmodel.m_pre_itbf_campaign_demand_mask;
+drop table lvmodel.m_pre_itbf_campaign_demand_mask
+;
 
 CREATE TABLE lvmodel.m_pre_itbf_campaign_demand_mask(
 		cid string,
@@ -73,7 +54,8 @@ CREATE TABLE lvmodel.m_pre_itbf_campaign_demand_mask(
 		status int
 )
 location 's3://lvprepackage-eu/iceberg/'
-tblproperties('table_type' = 'ICEBERG','format'='parquet');
+tblproperties('table_type' = 'ICEBERG','format'='parquet')
+;
 
 
 
@@ -101,20 +83,23 @@ CREATE TABLE lvmodel.m_pre_itbf_final (
 		rule_type string
 )
 location 's3://lvprepackage-eu/iceberg/'
-tblproperties('table_type' = 'ICEBERG','format'='parquet');
+tblproperties('table_type' = 'ICEBERG','format'='parquet')
+;
 
-delete from lvmodel.m_pre_itbf_final ;
-
-
-
-
+delete from lvmodel.m_pre_itbf_final
+;
 
 
 
 
 
 
-drop table lvmodel.m_pre_itbf_new_list_to_check ;
+
+
+
+
+drop table lvmodel.m_pre_itbf_new_list_to_check
+;
 
 CREATE TABLE lvmodel.m_pre_itbf_new_list_to_check  (
 	id int ,
@@ -127,13 +112,15 @@ CREATE TABLE lvmodel.m_pre_itbf_new_list_to_check  (
 	used_at timestamp
 )
 location 's3://lvprepackage-eu/iceberg/'
-tblproperties('table_type' = 'ICEBERG','format'='parquet');
+tblproperties('table_type' = 'ICEBERG','format'='parquet')
+;
 
 
 
 
 
-drop table lvmodel.m_pre_itbf_contact_history_table;
+drop table lvmodel.m_pre_itbf_contact_history_table
+;
 
 CREATE TABLE lvmodel.m_pre_itbf_contact_history_table  (
 	campaign_id int,
@@ -144,13 +131,15 @@ CREATE TABLE lvmodel.m_pre_itbf_contact_history_table  (
 	value string
 )
 location 's3://lvprepackage-eu/iceberg/'
-tblproperties('table_type' = 'ICEBERG','format'='parquet');
+tblproperties('table_type' = 'ICEBERG','format'='parquet')
+;
 
 
 
 
 
-drop table lvmodel.m_pre_itbf_template_demands;
+drop table lvmodel.m_pre_itbf_template_demands
+;
 
 CREATE TABLE lvmodel.m_pre_itbf_template_demands  (
 	cid string,
@@ -162,14 +151,16 @@ CREATE TABLE lvmodel.m_pre_itbf_template_demands  (
 	status int
 )
 location 's3://lvprepackage-eu/iceberg/'
-tblproperties('table_type' = 'ICEBERG','format'='parquet');
+tblproperties('table_type' = 'ICEBERG','format'='parquet')
+;
 
 
 
 
 
 
-drop table lvmodel.m_pre_itbf_contact_new_collection;
+drop table lvmodel.m_pre_itbf_contact_new_collection
+;
 
 CREATE TABLE lvmodel.m_pre_itbf_contact_new_collection (
 	cid string,
@@ -196,13 +187,15 @@ CREATE TABLE lvmodel.m_pre_itbf_contact_new_collection (
 	status int
 )
 location 's3://lvprepackage-eu/iceberg/'
-tblproperties('table_type' = 'ICEBERG','format'='parquet');
+tblproperties('table_type' = 'ICEBERG','format'='parquet')
+;
 
 
 
 
 
-drop table lvmodel.m_pre_itbf_approved_new_collection;
+drop table lvmodel.m_pre_itbf_approved_new_collection
+;
 
 CREATE TABLE lvmodel.m_pre_itbf_approved_new_collection (
 	cid string,
@@ -216,7 +209,8 @@ CREATE TABLE lvmodel.m_pre_itbf_approved_new_collection (
 	status int
 )
 location 's3://lvprepackage-eu/iceberg/'
-tblproperties('table_type' = 'ICEBERG','format'='parquet');
+tblproperties('table_type' = 'ICEBERG','format'='parquet')
+;
 
 
 
@@ -228,12 +222,15 @@ CREATE TABLE lvmodel.m_pre_itbf_industry_dict (
 	sub_industry string
 )
 location 's3://lvprepackage-eu/iceberg/'
-tblproperties('table_type' = 'ICEBERG','format'='parquet');
+tblproperties('table_type' = 'ICEBERG','format'='parquet')
+;
+
 
 insert into lvmodel.m_pre_itbf_industry_dict
 select i.name , s.name 
 from "lv-prepackage".app_lv.industries i
-inner join "lv-prepackage".app_lv.industries s on s.parent_id = i.id;
+inner join "lv-prepackage".app_lv.industries s on s.parent_id = i.id
+;
 
 
 
@@ -250,7 +247,8 @@ CREATE TABLE lvmodel.m_pre_itbf_pv_history (
 	company_phone string
 )
 location 's3://lvprepackage-eu/iceberg/'
-tblproperties('table_type' = 'ICEBERG','format'='parquet');
+tblproperties('table_type' = 'ICEBERG','format'='parquet')
+;
 
 
 
@@ -263,4 +261,5 @@ CREATE TABLE lvmodel.m_pre_itbf_approve_history (
 	value string
 )
 location 's3://lvprepackage-eu/iceberg/'
-tblproperties('table_type' = 'ICEBERG','format'='parquet');
+tblproperties('table_type' = 'ICEBERG','format'='parquet')
+;
