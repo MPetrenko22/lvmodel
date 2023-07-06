@@ -180,7 +180,7 @@ PV as (
 	left join "lv-prepackage".app_lv.contact_phones cph on cph.contact_id = c.id
 	left join "lv-prepackage".app_lv.contact_mobile_phones cmp on cmp.contact_id = c.id
 	left join "lv-prepackage".app_lv.company_phones comph on comph.ref_id = com.phone_ref
-	where DATE(v.date + INTERVAL '180' day) > NOW()
+	where date_add('day', 180, v.date + INTERVAL) > NOW()
 )
 select 
 	PV.ext_contact_id
@@ -211,7 +211,7 @@ APR_TIT as (
 	select 'title' as approve_type, h.email_id, null as ext_company_id, h.date_approve, h.title_value, row_number()over(partition by h.email_id order by h.date_approve desc) rn
 	from "lv-prepackage".app_lv.contacts_approves_history h 
 	where h.title_value is not null
-		and DATE(h.date_approve + INTERVAL '180' day) > NOW()	
+		and date_add('day', 180, h.date_approve) > NOW()	
 ),
 APR_ST as (
 	select 'state' as approve_type, h.email_id, null as ext_company_id, h.date_approve, h.state_value, row_number()over(partition by h.email_id order by h.date_approve desc) rn
@@ -230,7 +230,7 @@ APR_EMP as (
 	from  "lv-prepackage".app_lv.companies_approves_history h
 	where h.employees_min_value < 1000000000 and h.employees_max_value < 1000000000
 		and h.employees_min_value is not null
-		and DATE(h.date_approve + INTERVAL '360' day) > NOW()
+		and date_add('day', 360, h.date_approve) > NOW()
 )
 select approve_type, email_id, ext_company_id, date_approve, title_value as value
 from APR_TIT
