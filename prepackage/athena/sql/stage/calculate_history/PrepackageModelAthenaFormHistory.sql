@@ -207,7 +207,7 @@ APR_TIT as (
 	select 'title' as approve_type, h.email_id, null as ext_company_id, h.date_approve, h.title_value, row_number()over(partition by h.email_id order by h.date_approve desc) rn
 	from "lv-prepackage-stage".lv_stage_hotfix.contacts_approves_history h 
 	where h.title_value is not null
-		and date_add('day', 180, h.date_approve) > NOW() -- DATE(h.date_approve + INTERVAL '180' day) > NOW()
+		and date_add('day', 180, h.date_approve) > NOW() 
 ),
 APR_ST as (
 	select 'state' as approve_type, h.email_id, null as ext_company_id, h.date_approve, h.state_value, row_number()over(partition by h.email_id order by h.date_approve desc) rn
@@ -226,7 +226,7 @@ APR_EMP as (
 	from  "lv-prepackage-stage".lv_stage_hotfix.companies_approves_history h
 	where h.employees_min_value < 1000000000 and h.employees_max_value < 1000000000
 		and h.employees_min_value is not null
-		and date_add('day', 360, h.date_approve) > NOW() -- DATE(h.date_approve + INTERVAL '360' day) > NOW()
+		and date_add('day', 360, h.date_approve) > NOW()
 )
 select approve_type, email_id, ext_company_id, date_approve, title_value as value
 from APR_TIT
