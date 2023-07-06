@@ -1,10 +1,6 @@
 
-
-
-
-
-
-drop table lvmodel_stage.m_pre_itbf_campaign_requirement_options;
+drop table lvmodel_stage.m_pre_itbf_campaign_requirement_options
+;
 
 CREATE TABLE lvmodel_stage.m_pre_itbf_campaign_requirement_options (
 	id int, 
@@ -24,19 +20,22 @@ LOCATION 's3://lvprepackage/iceberg'
 TBLPROPERTIES (
   'table_type'='iceberg',
   'format'='parquet'
-);
+)
+;
 
 
 
 
 
-delete from lvmodel_stage.app_lv_campaign_requirement_options;
+delete from lvmodel_stage.app_lv_campaign_requirement_options
+;
 
 
 
 
 
-drop table lvmodel_stage.m_pre_itbf_campaign_demand_mask;
+drop table lvmodel_stage.m_pre_itbf_campaign_demand_mask
+;
 
 CREATE TABLE lvmodel_stage.m_pre_itbf_campaign_demand_mask(
 		cid string,
@@ -62,13 +61,15 @@ LOCATION 's3://lvprepackage/iceberg'
 TBLPROPERTIES (
   'table_type'='iceberg',
   'format'='parquet'
-);
+)
+;
 
 
 
 
 
-drop table lvmodel_stage.m_pre_itbf_final ;
+drop table lvmodel_stage.m_pre_itbf_final
+;
 
 CREATE TABLE lvmodel_stage.m_pre_itbf_final (
 		cid string, 
@@ -93,20 +94,23 @@ LOCATION 's3://lvprepackage/iceberg'
 TBLPROPERTIES (
   'table_type'='iceberg',
   'format'='parquet'
-);
+)
+;
 
-delete from lvmodel_stage.m_pre_itbf_final ;
-
-
-
-
+delete from lvmodel_stage.m_pre_itbf_final
+;
 
 
 
 
 
 
-drop table lvmodel_stage.m_pre_itbf_new_list_to_check ;
+
+
+
+
+drop table lvmodel_stage.m_pre_itbf_new_list_to_check
+;
 
 CREATE TABLE lvmodel_stage.m_pre_itbf_new_list_to_check  (
 	id int ,
@@ -122,13 +126,15 @@ LOCATION 's3://lvprepackage/iceberg'
 TBLPROPERTIES (
   'table_type'='iceberg',
   'format'='parquet'
-);
+)
+;
 
 
 
 
 
-drop table lvmodel_stage.m_pre_itbf_contact_history_table;
+drop table lvmodel_stage.m_pre_itbf_contact_history_table
+;
 
 CREATE TABLE lvmodel_stage.m_pre_itbf_contact_history_table  (
 	campaign_id int,
@@ -142,13 +148,15 @@ LOCATION 's3://lvprepackage/iceberg'
 TBLPROPERTIES (
   'table_type'='iceberg',
   'format'='parquet'
-);
+)
+;
 
 
 
 
 
-drop table lvmodel_stage.m_pre_itbf_template_demands;
+drop table lvmodel_stage.m_pre_itbf_template_demands
+;
 
 CREATE TABLE lvmodel_stage.m_pre_itbf_template_demands  (
 	cid string,
@@ -163,14 +171,16 @@ LOCATION 's3://lvprepackage/iceberg'
 TBLPROPERTIES (
   'table_type'='iceberg',
   'format'='parquet'
-);
+)
+;
 
 
 
 
 
 
-drop table lvmodel_stage.m_pre_itbf_contact_new_collection;
+drop table lvmodel_stage.m_pre_itbf_contact_new_collection
+;
 
 CREATE TABLE lvmodel_stage.m_pre_itbf_contact_new_collection (
 	cid string,
@@ -200,13 +210,15 @@ LOCATION 's3://lvprepackage/iceberg'
 TBLPROPERTIES (
   'table_type'='iceberg',
   'format'='parquet'
-);
+)
+;
 
 
 
 
 
-drop table lvmodel_stage.m_pre_itbf_approved_new_collection;
+drop table lvmodel_stage.m_pre_itbf_approved_new_collection
+;
 
 CREATE TABLE lvmodel_stage.m_pre_itbf_approved_new_collection (
 	cid string,
@@ -223,7 +235,8 @@ LOCATION 's3://lvprepackage/iceberg'
 TBLPROPERTIES (
   'table_type'='iceberg',
   'format'='parquet'
-);
+)
+;
 
 
 
@@ -238,13 +251,15 @@ LOCATION 's3://lvprepackage/iceberg'
 TBLPROPERTIES (
   'table_type'='iceberg',
   'format'='parquet'
-);
+)
+;
 
 
 insert into lvmodel_stage.m_pre_itbf_industry_dict
 select i.name , s.name 
 from "lv-prepackage-stage".lv_stage_hotfix.industries i
-inner join "lv-prepackage-stage".lv_stage_hotfix.industries s on s.parent_id = i.id;
+inner join "lv-prepackage-stage".lv_stage_hotfix.industries s on s.parent_id = i.id
+;
 
 
 
@@ -263,7 +278,8 @@ LOCATION 's3://lvprepackage/iceberg'
 TBLPROPERTIES (
   'table_type'='iceberg',
   'format'='parquet'
-);
+)
+;
 
 
 
@@ -279,7 +295,8 @@ LOCATION 's3://lvprepackage/iceberg'
 TBLPROPERTIES (
   'table_type'='iceberg',
   'format'='parquet'
-);
+)
+;
 
 
 
@@ -294,7 +311,10 @@ LOCATION 's3://lvprepackage/iceberg'
 TBLPROPERTIES (
   'table_type'='iceberg',
   'format'='parquet'
-);
+)
+;
+
+
 
 insert into lvmodel_stage.pre2_new_title_cm values 
 (745,'Global Marketing Director','Director','Marketing','Senior Management'),
