@@ -25,7 +25,7 @@ WITH MP AS (
 		INNER JOIN "lv-prepackage-stage".lv_stage_hotfix.campaign_template_parameters ctp ON ctp.id = ctc.parameter_id
 		INNER JOIN "lv-prepackage-stage".lv_stage_hotfix.campaign_templates ct ON ct.column_id = ctc.id
 		INNER JOIN "lv-prepackage-stage".lv_stage_hotfix.campaign_template_mappings ctm ON ctm.campaign_template_id = ct.id
-		inner join lvmodel_stage.m_pre_itbf_new_list_to_check ch on ch.cid = ca.cid and ch.status = 0 and ch.list_id = ?
+		inner join lvmodel_stage.m_pre_itbf_new_list_to_check ch on ch.cid = ca.cid and ch.list_id = ?
 )
 SELECT 
 	cid, 
