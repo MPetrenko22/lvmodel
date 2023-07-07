@@ -1,7 +1,7 @@
 /* 2 Define Template Demand at LV*/
 /* Define the new campaign template demands */
 
-insert into lvmodel_stage.m_pre_itbf_template_demands
+insert into lvmodel.m_pre_itbf_template_demands
 (
 	cid,
 	list_id,
@@ -20,12 +20,12 @@ WITH MP AS (
 			ctc.field_id AS field_id,
 			ctp."parameter",
 			ctm.mapping AS mapping_value
-		FROM "lv-prepackage-stage".lv_stage_hotfix.campaign_template_columns ctc
-		INNER JOIN "lv-prepackage-stage".lv_stage_hotfix.campaigns ca ON ca.id  = ctc.campaign_id
-		INNER JOIN "lv-prepackage-stage".lv_stage_hotfix.campaign_template_parameters ctp ON ctp.id = ctc.parameter_id
-		INNER JOIN "lv-prepackage-stage".lv_stage_hotfix.campaign_templates ct ON ct.column_id = ctc.id
-		INNER JOIN "lv-prepackage-stage".lv_stage_hotfix.campaign_template_mappings ctm ON ctm.campaign_template_id = ct.id
-		inner join lvmodel_stage.m_pre_itbf_new_list_to_check ch on ch.cid = ca.cid and ch.list_id = ?
+		FROM "lv-prepackage".app_lv.campaign_template_columns ctc
+		INNER JOIN "lv-prepackage".app_lv.campaigns ca ON ca.id  = ctc.campaign_id
+		INNER JOIN "lv-prepackage".app_lv."campaign_template_parameters" ctp ON ctp.id = ctc.parameter_id
+		INNER JOIN "lv-prepackage".app_lv.campaign_templates ct ON ct.column_id = ctc.id
+		INNER JOIN "lv-prepackage".app_lv.campaign_template_mappings ctm ON ctm.campaign_template_id = ct.id
+		inner join lvmodel.m_pre_itbf_new_list_to_check ch on ch.cid = ca.cid  and ch.list_id = ? 
 )
 SELECT 
 	cid, 
