@@ -2,12 +2,12 @@
 /* 7 Define PV*/
 /* LC Statuses */
 
-merge into  lvmodel_stage.m_pre_itbf_final f
+merge into  lv_athena_stage.m_pre_itbf_final f
 using (
 	select  distinct
 		n.contact_id, pv.pv_comment
-	from lvmodel_stage.m_pre_itbf_contact_new_collection n 
-	inner join lvmodel_stage.m_pre_itbf_pv_history pv 
+	from lv_athena_stage.m_pre_itbf_contact_new_collection n 
+	inner join lv_athena_stage.m_pre_itbf_pv_history pv 
 		on pv.ext_contact_id = n.ext_contact_id 
 		and (n.contact_phone = pv.contact_phone or n.mobile_phone  = pv.mobile_phone)
 		and pv.pv_comment in ('lc1','lc2','lc3','lc4')
@@ -22,12 +22,12 @@ when matched then update
 
 
 /* CC Statuses */
-merge into  lvmodel_stage.m_pre_itbf_final f
+merge into  lv_athena_stage.m_pre_itbf_final f
 using (
 	select  distinct
 		n.contact_id, pv.pv_comment
-	from lvmodel_stage.m_pre_itbf_contact_new_collection n 
-	inner join lvmodel_stage.m_pre_itbf_pv_history pv 
+	from lv_athena_stage.m_pre_itbf_contact_new_collection n 
+	inner join lv_athena_stage.m_pre_itbf_pv_history pv 
 		on pv.ext_contact_id = n.ext_contact_id 
 		and n.company_phone = pv.company_phone
 		and pv.pv_comment in ('cc1','cc2','cc3','cc4')
@@ -43,7 +43,7 @@ when matched then update
 
 
 /* Prepackafe PV Code */
-update lvmodel_stage.m_pre_itbf_final
+update lv_athena_stage.m_pre_itbf_final
 set prepackage_code = 1
 where list_id = ?
 	and pv_comment in ('lc1','lc2','lc3','lc4','cc1','cc2','cc3','cc4')
