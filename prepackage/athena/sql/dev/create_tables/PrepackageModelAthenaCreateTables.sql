@@ -16,7 +16,7 @@ CREATE TABLE lvmodel_dev.m_pre_itbf_campaign_requirement_options (
 	industry_skip boolean,
 	status int
 )
-LOCATION 's3://lvprepackage/dev/'
+LOCATION 's3://lvprepackage/dev/iceberg/'
 TBLPROPERTIES (
   'table_type'='iceberg',
   'format'='parquet'
@@ -57,7 +57,7 @@ CREATE TABLE lvmodel_dev.m_pre_itbf_campaign_demand_mask(
 		a_employee int,
 		status int
 )
-LOCATION 's3://lvprepackage/dev/'
+LOCATION 's3://lvprepackage/dev/iceberg/'
 TBLPROPERTIES (
   'table_type'='iceberg',
   'format'='parquet'
@@ -90,7 +90,7 @@ CREATE TABLE lvmodel_dev.m_pre_itbf_final (
 		prepackage_code int,
 		rule_type string
 )
-LOCATION 's3://lvprepackage/dev/'
+LOCATION 's3://lvprepackage/dev/iceberg/'
 TBLPROPERTIES (
   'table_type'='iceberg',
   'format'='parquet'
@@ -122,7 +122,7 @@ CREATE TABLE lvmodel_dev.m_pre_itbf_new_list_to_check  (
 	processed_at timestamp,
 	used_at timestamp
 )
-LOCATION 's3://lvprepackage/dev/'
+LOCATION 's3://lvprepackage/dev/iceberg/'
 TBLPROPERTIES (
   'table_type'='iceberg',
   'format'='parquet'
@@ -144,7 +144,7 @@ CREATE TABLE lvmodel_dev.m_pre_itbf_contact_history_table  (
 	attribute_name string,
 	value string
 )
-LOCATION 's3://lvprepackage/dev/'
+LOCATION 's3://lvprepackage/dev/iceberg/'
 TBLPROPERTIES (
   'table_type'='iceberg',
   'format'='parquet'
@@ -167,7 +167,7 @@ CREATE TABLE lvmodel_dev.m_pre_itbf_template_demands  (
 	value string,
 	status int
 )
-LOCATION 's3://lvprepackage/dev/'
+LOCATION 's3://lvprepackage/dev/iceberg/'
 TBLPROPERTIES (
   'table_type'='iceberg',
   'format'='parquet'
@@ -206,7 +206,7 @@ CREATE TABLE lvmodel_dev.m_pre_itbf_contact_new_collection (
 	company_phone string,
 	status int
 )
-LOCATION 's3://lvprepackage/dev/'
+LOCATION 's3://lvprepackage/dev/iceberg/'
 TBLPROPERTIES (
   'table_type'='iceberg',
   'format'='parquet'
@@ -231,7 +231,7 @@ CREATE TABLE lvmodel_dev.m_pre_itbf_approved_new_collection (
 	contact_approved int,
 	status int
 )
-LOCATION 's3://lvprepackage/dev/'
+LOCATION 's3://lvprepackage/dev/iceberg/'
 TBLPROPERTIES (
   'table_type'='iceberg',
   'format'='parquet'
@@ -241,13 +241,13 @@ TBLPROPERTIES (
 
 
 
-
+drop table lvmodel_dev.m_pre_itbf_industry_dict;
 
 CREATE TABLE lvmodel_dev.m_pre_itbf_industry_dict (
 	industry string,
 	sub_industry string
 )
-LOCATION 's3://lvprepackage/dev/'
+LOCATION 's3://lvprepackage/dev/iceberg/'
 TBLPROPERTIES (
   'table_type'='iceberg',
   'format'='parquet'
@@ -265,6 +265,7 @@ inner join "lv-prepackage-stage".lv_athena_stage.industries s on s.parent_id = i
 
 
 
+drop table lvmodel_dev.m_pre_itbf_pv_history;
 
 CREATE TABLE lvmodel_dev.m_pre_itbf_pv_history (
 	ext_contact_id bigint,
@@ -274,7 +275,7 @@ CREATE TABLE lvmodel_dev.m_pre_itbf_pv_history (
 	mobile_phone string,
 	company_phone string
 )
-LOCATION 's3://lvprepackage/dev/'
+LOCATION 's3://lvprepackage/dev/iceberg/'
 TBLPROPERTIES (
   'table_type'='iceberg',
   'format'='parquet'
@@ -283,6 +284,7 @@ TBLPROPERTIES (
 
 
 
+drop table lvmodel_dev.m_pre_itbf_approve_history ;
 
 CREATE TABLE lvmodel_dev.m_pre_itbf_approve_history (
 	approve_type string,
@@ -291,13 +293,19 @@ CREATE TABLE lvmodel_dev.m_pre_itbf_approve_history (
 	date_approve timestamp, 
 	value string
 )
-LOCATION 's3://lvprepackage/dev/'
+LOCATION 's3://lvprepackage/dev/iceberg/'
 TBLPROPERTIES (
   'table_type'='iceberg',
   'format'='parquet'
 )
 ;
 
+
+
+
+
+
+drop table lvmodel_dev.pre2_new_title_cm;
 
 
 create table lvmodel_dev.pre2_new_title_cm (
@@ -307,7 +315,7 @@ job_level string,
 job_area string,
 job_function string
 )
-LOCATION 's3://lvprepackage/dev/'
+LOCATION 's3://lvprepackage/dev/iceberg/'
 TBLPROPERTIES (
   'table_type'='iceberg',
   'format'='parquet'
