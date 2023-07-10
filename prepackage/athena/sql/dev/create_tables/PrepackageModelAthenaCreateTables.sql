@@ -16,7 +16,7 @@ CREATE TABLE lv_athena_stage.m_pre_itbf_campaign_requirement_options (
 	industry_skip boolean,
 	status int
 )
-LOCATION 's3://lvprepackage/iceberg'
+LOCATION 's3://lvprepackage/dev/'
 TBLPROPERTIES (
   'table_type'='iceberg',
   'format'='parquet'
@@ -57,7 +57,7 @@ CREATE TABLE lv_athena_stage.m_pre_itbf_campaign_demand_mask(
 		a_employee int,
 		status int
 )
-LOCATION 's3://lvprepackage/iceberg'
+LOCATION 's3://lvprepackage/dev/'
 TBLPROPERTIES (
   'table_type'='iceberg',
   'format'='parquet'
@@ -90,7 +90,7 @@ CREATE TABLE lv_athena_stage.m_pre_itbf_final (
 		prepackage_code int,
 		rule_type string
 )
-LOCATION 's3://lvprepackage/iceberg'
+LOCATION 's3://lvprepackage/dev/'
 TBLPROPERTIES (
   'table_type'='iceberg',
   'format'='parquet'
@@ -122,7 +122,7 @@ CREATE TABLE lv_athena_stage.m_pre_itbf_new_list_to_check  (
 	processed_at timestamp,
 	used_at timestamp
 )
-LOCATION 's3://lvprepackage/iceberg'
+LOCATION 's3://lvprepackage/dev/'
 TBLPROPERTIES (
   'table_type'='iceberg',
   'format'='parquet'
@@ -144,7 +144,7 @@ CREATE TABLE lv_athena_stage.m_pre_itbf_contact_history_table  (
 	attribute_name string,
 	value string
 )
-LOCATION 's3://lvprepackage/iceberg'
+LOCATION 's3://lvprepackage/dev/'
 TBLPROPERTIES (
   'table_type'='iceberg',
   'format'='parquet'
@@ -167,7 +167,7 @@ CREATE TABLE lv_athena_stage.m_pre_itbf_template_demands  (
 	value string,
 	status int
 )
-LOCATION 's3://lvprepackage/iceberg'
+LOCATION 's3://lvprepackage/dev/'
 TBLPROPERTIES (
   'table_type'='iceberg',
   'format'='parquet'
@@ -206,7 +206,7 @@ CREATE TABLE lv_athena_stage.m_pre_itbf_contact_new_collection (
 	company_phone string,
 	status int
 )
-LOCATION 's3://lvprepackage/iceberg'
+LOCATION 's3://lvprepackage/dev/'
 TBLPROPERTIES (
   'table_type'='iceberg',
   'format'='parquet'
@@ -231,7 +231,7 @@ CREATE TABLE lv_athena_stage.m_pre_itbf_approved_new_collection (
 	contact_approved int,
 	status int
 )
-LOCATION 's3://lvprepackage/iceberg'
+LOCATION 's3://lvprepackage/dev/'
 TBLPROPERTIES (
   'table_type'='iceberg',
   'format'='parquet'
@@ -247,7 +247,7 @@ CREATE TABLE lv_athena_stage.m_pre_itbf_industry_dict (
 	industry string,
 	sub_industry string
 )
-LOCATION 's3://lvprepackage/iceberg'
+LOCATION 's3://lvprepackage/dev/'
 TBLPROPERTIES (
   'table_type'='iceberg',
   'format'='parquet'
@@ -274,7 +274,7 @@ CREATE TABLE lv_athena_stage.m_pre_itbf_pv_history (
 	mobile_phone string,
 	company_phone string
 )
-LOCATION 's3://lvprepackage/iceberg'
+LOCATION 's3://lvprepackage/dev/'
 TBLPROPERTIES (
   'table_type'='iceberg',
   'format'='parquet'
@@ -291,7 +291,7 @@ CREATE TABLE lv_athena_stage.m_pre_itbf_approve_history (
 	date_approve timestamp, 
 	value string
 )
-LOCATION 's3://lvprepackage/iceberg'
+LOCATION 's3://lvprepackage/dev/'
 TBLPROPERTIES (
   'table_type'='iceberg',
   'format'='parquet'
@@ -307,7 +307,7 @@ job_level string,
 job_area string,
 job_function string
 )
-LOCATION 's3://lvprepackage/iceberg'
+LOCATION 's3://lvprepackage/dev/'
 TBLPROPERTIES (
   'table_type'='iceberg',
   'format'='parquet'
