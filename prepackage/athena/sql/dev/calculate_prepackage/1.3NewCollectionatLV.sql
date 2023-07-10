@@ -1,7 +1,7 @@
 /* 1.3 New Collection at LV*/
 /* Import all contacts and companies from LV belong to the new list id */
 
-insert into lv_athena_stage.m_pre_itbf_contact_new_collection
+insert into lvmodel_dev.m_pre_itbf_contact_new_collection
 (
 	cid,
 	"type",
