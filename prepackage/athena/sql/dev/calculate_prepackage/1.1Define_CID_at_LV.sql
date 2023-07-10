@@ -14,8 +14,8 @@ using
 	(
 		select 
 			ca.cid, l.id as list_id 
-		from "lv-prepackage-stage".lv_stage_hotfix.lists l 
-		inner join "lv-prepackage-stage".lv_stage_hotfix.campaigns ca on ca.id = l.campaign_id and ca.type = 2
+		from "lv-prepackage-stage".lv_athena_stage.lists l 
+		inner join "lv-prepackage-stage".lv_athena_stage.campaigns ca on ca.id = l.campaign_id and ca.type = 2
 		where l.id = ?
 	) s
 on (t.list_id = s.list_id and t.status is null)
