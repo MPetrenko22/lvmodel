@@ -2,7 +2,7 @@
 /* Import the verification requirements for the campaign */
 
 
-insert into lv_athena_stage.m_pre_itbf_campaign_requirement_options
+insert into lvmodel_dev.m_pre_itbf_campaign_requirement_options
 (
 	id, 
 	campaign_id, 
@@ -21,7 +21,7 @@ SELECT  DISTINCT
 	q.id, q.campaign_id, j.cid, j.list_id, j.id as session_id, q.is_latest, q.employees_empty, q.employees_skip, q.geo_empty, q.geo_skip, q.industry_skip, 0 
 FROM "lv-prepackage-stage".lv_stage_hotfix.campaign_requirement_options q
 INNER JOIN "lv-prepackage-stage".lv_stage_hotfix.lists l on l.campaign_id = q.campaign_id
-INNER JOIN lv_athena_stage.m_pre_itbf_new_list_to_check j on j.list_id = l.id and j.status = 0
+INNER JOIN lvmodel_dev.m_pre_itbf_new_list_to_check j on j.list_id = l.id and j.status = 0
 where q.is_latest = cast(1 as boolean)
 	and j.list_id = ?
 ;
@@ -30,7 +30,7 @@ where q.is_latest = cast(1 as boolean)
 
 
 /* Skip the employee, geo and industry demands when campaign verification requirements have their skip*/
-merge into lv_athena_stage.m_pre_itbf_campaign_demand_mask t 
+merge into lvmodel_dev.m_pre_itbf_campaign_demand_mask t 
 using
 	(
 		select distinct
@@ -39,7 +39,7 @@ using
 			case when o.employees_empty = try_cast(1 as boolean) or o.employees_skip = try_cast(1 as boolean) then 0 else null end skip_employee,
 			case when o.geo_empty = try_cast(1 as boolean) or o.geo_skip = try_cast(1 as boolean) then 0 else null end skip_geo,
 			case when o.industry_skip = try_cast(1 as boolean) then 0 else null end skip_industry
-		from lv_athena_stage.m_pre_itbf_campaign_requirement_options o
+		from lvmodel_dev.m_pre_itbf_campaign_requirement_options o
 		where o.list_id = ?
 	) s
 on (t.list_id = s.list_id)
