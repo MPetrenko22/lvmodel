@@ -1,7 +1,7 @@
 /* 1.1 Define CID at LV */
 
 /* Delete list_id dubles from previous calculation - to avoid errors  */
-delete from lvmodel_stage.m_pre_itbf_new_list_to_check where list_id = ? and id is not null
+delete from lv_athena_stage.m_pre_itbf_new_list_to_check where list_id = ? and id is not null
 ;
 
 
@@ -9,7 +9,7 @@ delete from lvmodel_stage.m_pre_itbf_new_list_to_check where list_id = ? and id 
 
 /* Define initial parameters and statuses for the new list id */
 
-merge into lvmodel_stage.m_pre_itbf_new_list_to_check t 
+merge into lv_athena_stage.m_pre_itbf_new_list_to_check t 
 using
 	(
 		select 
@@ -19,11 +19,11 @@ using
 		where l.id = ?
 	) s
 on (t.list_id = s.list_id and t.status is null)
-when matched then update set cid = s.cid, status = 0, id = (select max(case when id is null then 0 else id end) from lvmodel_stage.m_pre_itbf_new_list_to_check) + 1
+when matched then update set cid = s.cid, status = 0, id = (select max(case when id is null then 0 else id end) from lv_athena_stage.m_pre_itbf_new_list_to_check) + 1
 ;
 
 
-update lvmodel_stage.m_pre_itbf_new_list_to_check
-set status = -1, id = (select max(case when c2.id is null then 0 else c2.id end) from lvmodel_stage.m_pre_itbf_new_list_to_check c2) + 1 
+update lv_athena_stage.m_pre_itbf_new_list_to_check
+set status = -1, id = (select max(case when c2.id is null then 0 else c2.id end) from lv_athena_stage.m_pre_itbf_new_list_to_check c2) + 1 
 where status is null and list_id = ?
 ;
