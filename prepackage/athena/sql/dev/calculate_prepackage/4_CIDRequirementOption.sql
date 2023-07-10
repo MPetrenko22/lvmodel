@@ -19,8 +19,8 @@ insert into lvmodel_dev.m_pre_itbf_campaign_requirement_options
 )
 SELECT  DISTINCT
 	q.id, q.campaign_id, j.cid, j.list_id, j.id as session_id, q.is_latest, q.employees_empty, q.employees_skip, q.geo_empty, q.geo_skip, q.industry_skip, 0 
-FROM "lv-prepackage-stage".lv_stage_hotfix.campaign_requirement_options q
-INNER JOIN "lv-prepackage-stage".lv_stage_hotfix.lists l on l.campaign_id = q.campaign_id
+FROM "lv-prepackage-stage".lv_athena_stage.campaign_requirement_options q
+INNER JOIN "lv-prepackage-stage".lv_athena_stage.lists l on l.campaign_id = q.campaign_id
 INNER JOIN lvmodel_dev.m_pre_itbf_new_list_to_check j on j.list_id = l.id and j.status = 0
 where q.is_latest = cast(1 as boolean)
 	and j.list_id = ?
