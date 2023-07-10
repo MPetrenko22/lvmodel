@@ -1,7 +1,7 @@
 /* 3 CID Demand Mask*/
 /* Forms the mask for campaign demands - to keep set of demands */
 
-insert into lvmodel_stage.m_pre_itbf_campaign_demand_mask
+insert into lv_athena_stage.m_pre_itbf_campaign_demand_mask
 (
 	cid,
 	list_id,
@@ -38,7 +38,7 @@ with AA as (
 		if(field = 'industry', 1, 0) as a_industry,
 		if(field = 'employees', 1, 0) as employee,
 		if(field = 'employees', 1, 0) as a_employee
-	FROM lvmodel_stage.m_pre_itbf_template_demands d
+	FROM lv_athena_stage.m_pre_itbf_template_demands d
 	where d.list_id = ?
 )
 select cid, list_id, session_id, null, null, null, max(country), max(a_country), max(state), max(a_state),max(job_level),max(job_area),max(job_function),max(industry),max(a_industry),max(employee),max(a_employee), 0
@@ -50,7 +50,7 @@ group by cid, list_id, session_id, null, null, null
 
 
 /* Skip the employee, geo and industry demands when demads include full ranges (any value is valid) */					
-merge into lvmodel_stage.m_pre_itbf_campaign_demand_mask t 
+merge into lv_athena_stage.m_pre_itbf_campaign_demand_mask t 
 using
 	(
 		SELECT list_id, session_id, SUM(empl_mask) empl_mask, count(distinct state_name) as state_mask, count(distinct industry_name) as industry_mask
@@ -81,7 +81,7 @@ using
 								case 
 									when d.field = 'industry' then d.value 
 								end industry_name
-							FROM lvmodel_stage.m_pre_itbf_template_demands d
+							FROM lv_athena_stage.m_pre_itbf_template_demands d
 							where d.list_id = ?
 					) AA
 					GROUP BY list_id, session_id
