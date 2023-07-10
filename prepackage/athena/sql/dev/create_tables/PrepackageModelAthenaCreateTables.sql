@@ -1,8 +1,8 @@
 
-drop table lvmodel_stage.m_pre_itbf_campaign_requirement_options
+drop table lv_athena_stage.m_pre_itbf_campaign_requirement_options
 ;
 
-CREATE TABLE lvmodel_stage.m_pre_itbf_campaign_requirement_options (
+CREATE TABLE lv_athena_stage.m_pre_itbf_campaign_requirement_options (
 	id int, 
 	campaign_id int, 
 	cid string,
@@ -27,17 +27,17 @@ TBLPROPERTIES (
 
 
 
-delete from lvmodel_stage.app_lv_campaign_requirement_options
+delete from lv_athena_stage.app_lv_campaign_requirement_options
 ;
 
 
 
 
 
-drop table lvmodel_stage.m_pre_itbf_campaign_demand_mask
+drop table lv_athena_stage.m_pre_itbf_campaign_demand_mask
 ;
 
-CREATE TABLE lvmodel_stage.m_pre_itbf_campaign_demand_mask(
+CREATE TABLE lv_athena_stage.m_pre_itbf_campaign_demand_mask(
 		cid string,
 		list_id bigint,
 		session_id int,
@@ -68,10 +68,10 @@ TBLPROPERTIES (
 
 
 
-drop table lvmodel_stage.m_pre_itbf_final
+drop table lv_athena_stage.m_pre_itbf_final
 ;
 
-CREATE TABLE lvmodel_stage.m_pre_itbf_final (
+CREATE TABLE lv_athena_stage.m_pre_itbf_final (
 		cid string, 
 		list_id int, 
 		session_id int,
@@ -97,7 +97,7 @@ TBLPROPERTIES (
 )
 ;
 
-delete from lvmodel_stage.m_pre_itbf_final
+delete from lv_athena_stage.m_pre_itbf_final
 ;
 
 
@@ -109,10 +109,10 @@ delete from lvmodel_stage.m_pre_itbf_final
 
 
 
-drop table lvmodel_stage.m_pre_itbf_new_list_to_check
+drop table lv_athena_stage.m_pre_itbf_new_list_to_check
 ;
 
-CREATE TABLE lvmodel_stage.m_pre_itbf_new_list_to_check  (
+CREATE TABLE lv_athena_stage.m_pre_itbf_new_list_to_check  (
 	id int ,
 	list_id int,
 	cid string,
@@ -133,10 +133,10 @@ TBLPROPERTIES (
 
 
 
-drop table lvmodel_stage.m_pre_itbf_contact_history_table
+drop table lv_athena_stage.m_pre_itbf_contact_history_table
 ;
 
-CREATE TABLE lvmodel_stage.m_pre_itbf_contact_history_table  (
+CREATE TABLE lv_athena_stage.m_pre_itbf_contact_history_table  (
 	campaign_id int,
 	entity_type string,
 	entity_id int,
@@ -155,10 +155,10 @@ TBLPROPERTIES (
 
 
 
-drop table lvmodel_stage.m_pre_itbf_template_demands
+drop table lv_athena_stage.m_pre_itbf_template_demands
 ;
 
-CREATE TABLE lvmodel_stage.m_pre_itbf_template_demands  (
+CREATE TABLE lv_athena_stage.m_pre_itbf_template_demands  (
 	cid string,
 	list_id bigint,
 	session_id int,
@@ -179,10 +179,10 @@ TBLPROPERTIES (
 
 
 
-drop table lvmodel_stage.m_pre_itbf_contact_new_collection
+drop table lv_athena_stage.m_pre_itbf_contact_new_collection
 ;
 
-CREATE TABLE lvmodel_stage.m_pre_itbf_contact_new_collection (
+CREATE TABLE lv_athena_stage.m_pre_itbf_contact_new_collection (
 	cid string,
 	type bigint,
 	campaign_id bigint,
@@ -217,10 +217,10 @@ TBLPROPERTIES (
 
 
 
-drop table lvmodel_stage.m_pre_itbf_approved_new_collection
+drop table lv_athena_stage.m_pre_itbf_approved_new_collection
 ;
 
-CREATE TABLE lvmodel_stage.m_pre_itbf_approved_new_collection (
+CREATE TABLE lv_athena_stage.m_pre_itbf_approved_new_collection (
 	cid string,
 	list_id bigint,
 	session_id int,
@@ -243,7 +243,7 @@ TBLPROPERTIES (
 
 
 
-CREATE TABLE lvmodel_stage.m_pre_itbf_industry_dict (
+CREATE TABLE lv_athena_stage.m_pre_itbf_industry_dict (
 	industry string,
 	sub_industry string
 )
@@ -255,7 +255,7 @@ TBLPROPERTIES (
 ;
 
 
-insert into lvmodel_stage.m_pre_itbf_industry_dict
+insert into lv_athena_stage.m_pre_itbf_industry_dict
 select i.name , s.name 
 from "lv-prepackage-stage".lv_stage_hotfix.industries i
 inner join "lv-prepackage-stage".lv_stage_hotfix.industries s on s.parent_id = i.id
@@ -266,7 +266,7 @@ inner join "lv-prepackage-stage".lv_stage_hotfix.industries s on s.parent_id = i
 
 
 
-CREATE TABLE lvmodel_stage.m_pre_itbf_pv_history (
+CREATE TABLE lv_athena_stage.m_pre_itbf_pv_history (
 	ext_contact_id bigint,
 	contact_id bigint,
 	pv_comment string,
@@ -284,7 +284,7 @@ TBLPROPERTIES (
 
 
 
-CREATE TABLE lvmodel_stage.m_pre_itbf_approve_history (
+CREATE TABLE lv_athena_stage.m_pre_itbf_approve_history (
 	approve_type string,
 	email_id bigint,
 	ext_company_id bigint, 
@@ -300,7 +300,7 @@ TBLPROPERTIES (
 
 
 
-create table lvmodel_stage.pre2_new_title_cm (
+create table lv_athena_stage.pre2_new_title_cm (
 id int,
 title string,
 job_level string,
@@ -316,7 +316,7 @@ TBLPROPERTIES (
 
 
 
-insert into lvmodel_stage.pre2_new_title_cm values 
+insert into lv_athena_stage.pre2_new_title_cm values 
 (745,'Global Marketing Director','Director','Marketing','Senior Management'),
 (746,'Global Marketing Manager','Manager','Marketing','General Management'),
 (747,'Global Payroll Director','Director','Human Resources','Payroll / Benefits'),
