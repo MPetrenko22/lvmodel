@@ -1,7 +1,7 @@
 /* 6 Result*/
 /* Insert into Result tables contacts which is Prepackage for new list id*/
 
-insert into lvmodel_stage.m_pre_itbf_final
+insert into lv_athena_stage.m_pre_itbf_final
 (
 	cid, 
 	list_id, 
@@ -23,29 +23,29 @@ insert into lvmodel_stage.m_pre_itbf_final
 )
 WITH NC AS (
 		SELECT distinct a.contact_id, a.list_id, a.ext_contact_id, a.title, a.country, a.state, a.company_id, a.ext_company_id, a.employee, a.industry, a.cid
-		FROM lvmodel_stage.m_pre_itbf_contact_new_collection a
-		inner join lvmodel_stage.m_pre_itbf_approved_new_collection f on f.contact_id = a.contact_id and f.cid = a.cid and f.contact_approved = 1
+		FROM lv_athena_stage.m_pre_itbf_contact_new_collection a
+		inner join lv_athena_stage.m_pre_itbf_approved_new_collection f on f.contact_id = a.contact_id and f.cid = a.cid and f.contact_approved = 1
 		where  a.list_id = ?
 ),
 CC AS (
 		SELECT DISTINCT NC.cid, NC.list_id, NC.contact_id AS new_contact_id, h.entity_id, 'contact_id+title' AS rule_type, NULL AS title
 		FROM NC
-		INNER JOIN lvmodel_stage.m_pre_itbf_contact_history_table h ON h.ext_entity_id = NC.ext_contact_id AND h.attribute_name = 'title' AND h.value = NC.title
+		INNER JOIN lv_athena_stage.m_pre_itbf_contact_history_table h ON h.ext_entity_id = NC.ext_contact_id AND h.attribute_name = 'title' AND h.value = NC.title
 		UNION ALL
 		SELECT DISTINCT NC.cid, NC.list_id, NC.contact_id AS new_contact_id, h.entity_id, 'title' AS rule_type, NC.title
 		FROM NC
-		INNER JOIN lvmodel_stage.pre2_new_title_cm t ON t.title = NC.title
-		INNER JOIN lvmodel_stage.m_pre_itbf_contact_history_table h ON h.entity_type = 'contact' AND h.attribute_name = 'title' AND h.value = NC.title
+		INNER JOIN lv_athena_stage.pre2_new_title_cm t ON t.title = NC.title
+		INNER JOIN lv_athena_stage.m_pre_itbf_contact_history_table h ON h.entity_type = 'contact' AND h.attribute_name = 'title' AND h.value = NC.title
 ),
 RES_C AS (
 		SELECT CC.cid, CC.list_id, CC.new_contact_id, h.entity_id, h.campaign_id, h.entity_type, h.ext_entity_id, h.attribute_name, h.value AS value_h, CC.rule_type, CC.title
 		FROM CC
-		INNER JOIN lvmodel_stage.m_pre_itbf_contact_history_table h ON CC.entity_id = h.entity_id  AND h.entity_type = 'contact'
+		INNER JOIN lv_athena_stage.m_pre_itbf_contact_history_table h ON CC.entity_id = h.entity_id  AND h.entity_type = 'contact'
 ),
 RES_COM AS (
 		SELECT DISTINCT NC.cid, NC.list_id, NC.ext_company_id, h.entity_id, h.campaign_id, h.entity_type, h.ext_entity_id, h.attribute_name, h.value AS value_h, NULL AS rule_type, NULL AS title
 		FROM NC
-		INNER JOIN lvmodel_stage.m_pre_itbf_contact_history_table h ON h.ext_entity_id = NC.ext_company_id AND h.entity_type = 'company'
+		INNER JOIN lv_athena_stage.m_pre_itbf_contact_history_table h ON h.ext_entity_id = NC.ext_company_id AND h.entity_type = 'company'
 ),
 RES_T AS (
 		SELECT  *
@@ -65,8 +65,8 @@ RES AS (
 			END value_h,
 			D.cid AS cid_d, RES_T.rule_type
 		FROM RES_T
-		INNER JOIN lvmodel_stage.m_pre_itbf_template_demands D ON D.cid = RES_T.cid and D.list_id = RES_T.list_id AND D.entity_type = RES_T.entity_type AND D.field = RES_T.attribute_name AND D.value = RES_T.value_h
-		LEFT JOIN lvmodel_stage.pre2_new_title_cm nt ON nt.title = RES_T.title AND RES_T.attribute_name IN ('job_level', 'job_area', 'job_function')
+		INNER JOIN lv_athena_stage.m_pre_itbf_template_demands D ON D.cid = RES_T.cid and D.list_id = RES_T.list_id AND D.entity_type = RES_T.entity_type AND D.field = RES_T.attribute_name AND D.value = RES_T.value_h
+		LEFT JOIN lv_athena_stage.pre2_new_title_cm nt ON nt.title = RES_T.title AND RES_T.attribute_name IN ('job_level', 'job_area', 'job_function')
 		UNION ALL
 		SELECT a.cid, a.list_id, a.contact_id, H.entity_id, H.campaign_id, H.entity_type, H.ext_entity_id, H.attribute_name,  a.country AS value, a.cid AS cid_d, NULL
 		FROM NC a
@@ -135,9 +135,9 @@ FIN as (
 			row_number()over(partition by a.cid, a.list_id, a.contact_id order by s1.entity_id desc) rn,
 			IND.industry_h,
 			IND.sub_industry_h
-		FROM lvmodel_stage.m_pre_itbf_contact_new_collection a
+		FROM lv_athena_stage.m_pre_itbf_contact_new_collection a
 		INNER JOIN SAT AS s1 ON a.cid = s1.cid and a.list_id = s1.list_id AND s1.entity_type = 'contact' AND s1.new_contact_id = a.contact_id
-		INNER JOIN (SELECT DISTINCT cid, list_id, country, a_country, state, a_state, job_level, job_area, job_function  FROM lvmodel_stage.m_pre_itbf_campaign_demand_mask) DM1
+		INNER JOIN (SELECT DISTINCT cid, list_id, country, a_country, state, a_state, job_level, job_area, job_function  FROM lv_athena_stage.m_pre_itbf_campaign_demand_mask) DM1
 			ON DM1.cid = s1.cid and DM1.list_id = s1.list_id and s1.entity_type = 'contact'
 				AND (DM1.country = 1 and DM1.country = s1.country OR DM1.country = 0) 
 				AND (DM1.a_country = 1 and DM1.a_country = s1.a_country OR DM1.a_country = 0)
@@ -147,7 +147,7 @@ FIN as (
 				AND (DM1.job_area = 1 and DM1.job_area = s1.job_area OR DM1.job_area = 0)
 				AND (DM1.job_function = 1 and DM1.job_function = s1.job_function OR DM1.job_function = 0)			
 		INNER JOIN SAT AS s2 ON a.cid = s2.cid and a.list_id = s2.list_id AND s2.entity_type = 'company' AND s2.new_contact_id = a.ext_company_id
-		INNER JOIN (SELECT DISTINCT cid, list_id, industry, a_industry, employee, a_employee  FROM lvmodel_stage.m_pre_itbf_campaign_demand_mask) DM2 
+		INNER JOIN (SELECT DISTINCT cid, list_id, industry, a_industry, employee, a_employee  FROM lv_athena_stage.m_pre_itbf_campaign_demand_mask) DM2 
 			ON DM2.cid = s2.cid and DM2.list_id = s2.list_id AND s2.entity_type = 'company'
 				AND (DM2.industry = 1 and DM2.industry = s2.industry OR DM2.industry = 0)
 				AND (DM2.industry = 1 and DM2.industry = s2.sub_industry OR DM2.industry = 0)
@@ -159,7 +159,7 @@ FIN as (
 				select II.new_contact_id, II.attribute_name, II.value_h as industry_h, SS.value_h as sub_industry_h
 				from RES II
 				inner join RES SS on SS.entity_id = II.entity_id and II.new_contact_id = SS.new_contact_id and SS.entity_type = 'company' and SS.attribute_name = 'sub_industry'
-				inner join lvmodel_stage.m_pre_itbf_industry_dict SI on SI.industry = II.value_h and SI.sub_industry = SS.value_h
+				inner join lv_athena_stage.m_pre_itbf_industry_dict SI on SI.industry = II.value_h and SI.sub_industry = SS.value_h
 				where II.entity_type = 'company' and II.attribute_name = 'industry'
 			) IND on IND.new_contact_id = a.ext_company_id
 		where a.list_id = ?
