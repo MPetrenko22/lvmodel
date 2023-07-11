@@ -13,8 +13,8 @@ insert into lvmodel_dev.m_pre_itbf_template_demands
 WITH MP AS (
 		SELECT DISTINCT
 			ca.cid,
-			ch.list_id,
-			ch.id as session_id,
+			l.id AS list_id,
+			0 as session_id,
 			ctc.id AS column_id,
 			ctc.parameter_id AS parameter_id,
 			ctc.field_id AS field_id,
@@ -25,7 +25,8 @@ WITH MP AS (
 		INNER JOIN "lv-prepackage-stage".lv_athena_stage."campaign_template_parameters" ctp ON ctp.id = ctc.parameter_id
 		INNER JOIN "lv-prepackage-stage".lv_athena_stage.campaign_templates ct ON ct.column_id = ctc.id
 		INNER JOIN "lv-prepackage-stage".lv_athena_stage.campaign_template_mappings ctm ON ctm.campaign_template_id = ct.id
-		inner join lvmodel_dev.m_pre_itbf_new_list_to_check ch on ch.cid = ca.cid  and ch.list_id = ? 
+		INNER JOIN "lv-prepackage-stage".lv_athena_stage.lists l on l.campaign_id = ca.id
+		WHERE l.id = 16417
 )
 SELECT 
 	cid, 
