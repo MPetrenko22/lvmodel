@@ -26,7 +26,7 @@ WITH MP AS (
 		INNER JOIN "lv-prepackage-stage".lv_stage_hotfix.campaign_templates ct ON ct.column_id = ctc.id
 		INNER JOIN "lv-prepackage-stage".lv_stage_hotfix.campaign_template_mappings ctm ON ctm.campaign_template_id = ct.id
 		INNER JOIN "lv-prepackage-stage".lv_stage_hotfix.lists l on l.campaign_id = ca.id
-		WHERE l.id = 16417
+		WHERE l.id = ?
 )
 SELECT 
 	cid, 
