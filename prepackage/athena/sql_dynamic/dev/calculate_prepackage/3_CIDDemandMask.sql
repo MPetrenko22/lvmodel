@@ -47,7 +47,7 @@ WITH AA AS (
 		if(field = 'industry', 1, 0) as a_industry,
 		if(field = 'employees', 1, 0) as employee,
 		if(field = 'employees', 1, 0) as a_employee
-	FROM lvmodel_dev.m_pre_itbf_template_demands d
+	FROM lvmodel_dev.m_pre_itbf_template_demands_? d
 	WHERE d.list_id = ?
 )
 SELECT cid, list_id, session_id, NULL, NULL, NULL, max(country), max(a_country), max(state), max(a_state),max(job_level),max(job_area),max(job_function),max(industry),max(a_industry),max(employee),max(a_employee), 0
