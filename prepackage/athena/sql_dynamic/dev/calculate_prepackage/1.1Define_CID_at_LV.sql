@@ -1,7 +1,15 @@
 /* 1.1 Define CID at LV */
-
-/* Delete list_id dubles from previous calculation - to avoid errors  */
-delete from lvmodel_dev.m_pre_itbf_new_list_to_check where list_id = ? and id is not null
+/*Create tmp table*/
+CREATE TABLE lvmodel_dev.m_pre_itbf_new_list_to_check_?  (
+	list_id int,
+	cid string,
+	status int
+)
+LOCATION 's3://lvprepackage/dev/iceberg/'
+TBLPROPERTIES (
+  'table_type'='iceberg',
+  'format'='parquet'
+)
 ;
 
 
