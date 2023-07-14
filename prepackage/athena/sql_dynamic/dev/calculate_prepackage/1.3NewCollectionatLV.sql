@@ -1,5 +1,6 @@
 /* 1.3 New Collection at LV*/
 /* Import all contacts and companies from LV belong to the new list id */
+
 CREATE TABLE lvmodel_dev.m_pre_itbf_contact_new_collection_?
 LOCATION 's3://lvprepackage/dev/iceberg/'
 TBLPROPERTIES (
