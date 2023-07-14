@@ -1,13 +1,36 @@
 /* 3 CID Demand Mask*/
 /* Forms the mask for campaign demands - to keep set of demands */
 
-CREATE TABLE lvmodel_dev.m_pre_itbf_campaign_demand_mask_?
+CREATE TABLE lvmodel_dev.m_pre_itbf_campaign_demand_mask_? (
+		cid string,
+		list_id bigint,
+		session_id int,
+		entity_type string,
+		entity_demand_type string,
+		bit_mask INT,
+		country int,
+		a_country int,
+		state int,
+		a_state int,
+		job_level int,
+		job_area int,
+		job_function int,
+		industry int,
+		a_industry int,
+		employee int,
+		a_employee int,
+		status int
+)
 LOCATION 's3://lvprepackage/dev/iceberg/'
 TBLPROPERTIES (
   'table_type'='iceberg',
   'format'='parquet'
 )
-AS 
+;
+
+
+
+INSERT INTO lvmodel_dev.m_pre_itbf_campaign_demand_mask_?
 WITH AA AS (
 	SELECT  
 		d.cid,
