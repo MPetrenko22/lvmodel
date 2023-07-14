@@ -7,8 +7,7 @@ CREATE TABLE lvmodel_dev.m_pre_itbf_template_demands_?  (
 	session_id int,
 	entity_type string,
 	field string,
-	value string,
-	status int
+	value string
 )
 LOCATION 's3://lvprepackage/dev/iceberg/'
 TBLPROPERTIES (
