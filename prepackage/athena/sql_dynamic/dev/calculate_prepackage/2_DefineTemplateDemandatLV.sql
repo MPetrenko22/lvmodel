@@ -1,13 +1,24 @@
 /* 2 Define Template Demand at LV*/
 /* Define the new campaign template demands */
 
-CREATE TABLE lvmodel_dev.m_pre_itbf_template_demands_?
+CREATE TABLE lvmodel_dev.m_pre_itbf_template_demands_?  (
+	cid string,
+	list_id bigint,
+	session_id int,
+	entity_type string,
+	field string,
+	value string,
+	status int
+)
 LOCATION 's3://lvprepackage/dev/iceberg/'
 TBLPROPERTIES (
   'table_type'='iceberg',
   'format'='parquet'
 )
-AS 
+;
+
+
+INSERT INTO lvmodel_dev.m_pre_itbf_template_demands_?
 WITH MP AS (
 		SELECT DISTINCT
 			ca.cid,
