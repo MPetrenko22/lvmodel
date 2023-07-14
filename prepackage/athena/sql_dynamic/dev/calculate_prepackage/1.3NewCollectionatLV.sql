@@ -1,13 +1,41 @@
 /* 1.3 New Collection at LV*/
 /* Import all contacts and companies from LV belong to the new list id */
 
-CREATE TABLE lvmodel_dev.m_pre_itbf_contact_new_collection_?
+CREATE TABLE lvmodel_dev.m_pre_itbf_contact_new_collection_? (
+	cid string,
+	type bigint,
+	campaign_id bigint,
+	list_id bigint,
+	session_id int,
+	email_id bigint,
+	email string,
+	id bigint,
+	contact_id bigint,
+	ext_contact_id bigint,
+	title string,
+	country string,
+	state string,
+	contact_phone string,
+	mobile_phone string,
+	pv_comment string,
+	company_id bigint,
+	ext_company_id bigint,
+	employee string,
+	industry string,
+	company_phone string,
+	status int
+)
 LOCATION 's3://lvprepackage/dev/iceberg/'
 TBLPROPERTIES (
   'table_type'='iceberg',
   'format'='parquet'
 )
-AS SELECT DISTINCT
+;
+
+
+
+INSERT INTO lvmodel_dev.m_pre_itbf_contact_new_collection_? 
+SELECT DISTINCT
 	ca.cid
 	, ca.type
 	, c.campaign_id
