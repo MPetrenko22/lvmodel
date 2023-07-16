@@ -48,9 +48,3 @@ where list_id = ?
 	and pv_comment in ('lc1','lc2','lc3','lc4','cc1','cc2','cc3','cc4')
 ;
 
-
-
-/*Insert Final Result into common table*/
-INSERT INTO lvmodel_dev.m_pre_itbf_final
-SELECT * FROM lvmodel_dev.m_pre_itbf_final_?
-;
