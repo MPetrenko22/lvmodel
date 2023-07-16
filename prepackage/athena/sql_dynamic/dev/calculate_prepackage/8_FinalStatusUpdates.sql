@@ -7,7 +7,6 @@ SELECT * FROM lvmodel_dev.m_pre_itbf_final_?
 
 
 
-
 /* Update statuses when calculation has been finished*/
 INSERT INTO lvmodel_dev.m_pre_itbf_new_list_to_check(list_id, status, prepackage_contact_count, created_at, processed_at)
 WITH ST AS
@@ -20,3 +19,16 @@ SELECT list_id, status, prepackage_contact_count, created_at, processed_at
 FROM ST
 ;
 
+
+
+insert into lvmodel_dev.m_pre_itbf_new_list_to_check(list_id, status,  created_at, processed_at)
+WITH ST AS
+(
+	SELECT ch.list_id, -1 AS status, NOW() AS created_at, NOW() AS processed_at
+	FROM lvmodel_dev.m_pre_itbf_new_list_to_check ch
+	left join lvmodel_dev.m_pre_itbf_new_list_to_check_? ch1 on ch1.list_id = ch.list_id 
+	where ch.status = 0 and ch1.list_id is NULL
+)
+SELECT list_id, status, created_at, processed_at
+FROM ST
+;
