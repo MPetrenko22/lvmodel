@@ -4,7 +4,8 @@
 CREATE TABLE lvmodel_dev.m_pre_itbf_new_list_to_check_? (
 	list_id int,
 	cid string,
-	status int
+	status int,
+	prepackage_contact_count int
 )
 LOCATION 's3://lvprepackage/dev/iceberg/'
 TBLPROPERTIES (
