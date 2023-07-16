@@ -27,7 +27,7 @@ WITH ST AS
 	SELECT ch.list_id, -1 AS status, NOW() AS created_at, NOW() AS processed_at
 	FROM lvmodel_dev.m_pre_itbf_new_list_to_check ch
 	left join lvmodel_dev.m_pre_itbf_new_list_to_check_? ch1 on ch1.list_id = ch.list_id 
-	where ch.status = 0 and ch1.list_id is NULL
+	where ch.status = 0 and ch1.list_id is NULL AND ch.list_id = ?
 )
 SELECT list_id, status, created_at, processed_at
 FROM ST
