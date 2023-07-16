@@ -1,7 +1,7 @@
 /* 6 Result*/
 /*Create tmp table*/
 
-CREATE TABLE lvmodel_dev.m_pre_itbf_final (
+CREATE TABLE lvmodel_dev.m_pre_itbf_final_? (
 		cid string, 
 		list_id int, 
 		session_id int,
@@ -32,7 +32,7 @@ TBLPROPERTIES (
 
 /* Insert into Result tables contacts which is Prepackage for new list id*/
 
-INSERT INTO lvmodel_dev.m_pre_itbf_final
+INSERT INTO lvmodel_dev.m_pre_itbf_final_?
 (
 	cid, 
 	list_id, 
@@ -54,9 +54,9 @@ INSERT INTO lvmodel_dev.m_pre_itbf_final
 )
 WITH NC AS (
 		SELECT distinct a.contact_id, a.list_id, a.ext_contact_id, a.title, a.country, a.state, a.company_id, a.ext_company_id, a.employee, a.industry, a.cid
-		FROM lvmodel_dev.m_pre_itbf_contact_new_collection a
-		inner join lvmodel_dev.m_pre_itbf_approved_new_collection f on f.contact_id = a.contact_id and f.cid = a.cid and f.contact_approved = 1
-		where  a.list_id = ?
+		FROM lvmodel_dev.m_pre_itbf_contact_new_collection_? a
+		INNER JOIN lvmodel_dev.m_pre_itbf_approved_new_collection_? f ON f.contact_id = a.contact_id AND f.cid = a.cid AND f.contact_approved = 1
+		WHERE  a.list_id = ?
 ),
 CC AS (
 		SELECT DISTINCT NC.cid, NC.list_id, NC.contact_id AS new_contact_id, h.entity_id, 'contact_id+title' AS rule_type, NULL AS title
