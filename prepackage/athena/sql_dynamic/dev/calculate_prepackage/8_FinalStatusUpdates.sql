@@ -6,6 +6,10 @@ SELECT * FROM lvmodel_dev.m_pre_itbf_final_?
 ;
 
 
+DELETE FROM lvmodel_dev.m_pre_itbf_new_list_to_check WHERE list_id = lvmodel_dev.m_pre_itbf_new_list_to_check
+;
+
+
 
 /* Update statuses when calculation has been finished*/
 INSERT INTO lvmodel_dev.m_pre_itbf_new_list_to_check(cid, list_id, status, prepackage_contact_count, created_at, processed_at)
