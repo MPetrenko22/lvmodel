@@ -18,3 +18,5 @@ DROP TABLE lvmodel_dev.m_pre_itbf_campaign_demand_mask_?
 DROP TABLE lvmodel_dev.m_pre_itbf_approved_new_collection_?
 ;
 
+DROP TABLE lvmodel_dev.m_pre_itbf_new_list_to_check_?
+;
