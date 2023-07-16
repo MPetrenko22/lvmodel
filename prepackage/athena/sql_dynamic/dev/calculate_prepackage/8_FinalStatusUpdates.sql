@@ -1,15 +1,20 @@
 /* 8 Final Status Updates */
-/* Update statuses when calculation has been finished*/
 
-merge into lvmodel_dev.m_pre_itbf_new_list_to_check t 
-using
-	(
-		select c.list_id, count(distinct f.contact_id) cnt 
-		from lvmodel_dev.m_pre_itbf_new_list_to_check c
-		left join lvmodel_dev.m_pre_itbf_final f on f.list_id = c.list_id 
-		where c.list_id = ? 
-		group by c.list_id
-	) s
-on (t.list_id = s.list_id and t.status = 0)
-when matched then update set prepackage_contact_count = s.cnt, status = 1, processed_at = NOW()
+/*Insert Final Result into common table*/
+INSERT INTO lvmodel_dev.m_pre_itbf_final
+SELECT * FROM lvmodel_dev.m_pre_itbf_final_?
 ;
+
+
+
+
+/* Update statuses when calculation has been finished*/
+INSERT INTO lvmodel_dev.m_pre_itbf_new_list_to_check(list_id, status, prepackage_contact_count, created_at, processed_at)
+WITH ST AS
+(
+	SELECT f.list_id, 1 AS status, COUNT(*) AS prepackage_contact_count, NOW() AS created_at, NOW() AS created_at
+	FROM lvmodel_dev.m_pre_itbf_final_? f
+	GROUP BY f.list_id
+)
+;
+
