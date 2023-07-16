@@ -1,7 +1,7 @@
 /* 4 CID Requirement Option*/
 /*Create Table*/
 
-CREATE TABLE lvmodel_dev.m_pre_itbf_campaign_requirement_options_16417 (
+CREATE TABLE lvmodel_dev.m_pre_itbf_campaign_requirement_options_? (
 	id int, 
 	campaign_id int, 
 	cid string,
