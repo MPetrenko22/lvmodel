@@ -1,7 +1,7 @@
 /* 4 CID Requirement Option*/
 /*Create Table*/
 
-CREATE TABLE lvmodel_dev.m_pre_itbf_campaign_requirement_options_? (
+CREATE TABLE lvmodel_dev.m_pre_itbf_campaign_requirement_options_16417 (
 	id int, 
 	campaign_id int, 
 	cid string,
@@ -42,12 +42,11 @@ insert into lvmodel_dev.m_pre_itbf_campaign_requirement_options_?
 	status
 )
 SELECT  DISTINCT
-	q.id, q.campaign_id, j.cid, j.list_id, j.id as session_id, q.is_latest, q.employees_empty, q.employees_skip, q.geo_empty, q.geo_skip, q.industry_skip, 0 
+	q.id, q.campaign_id, null as cid, l.id as list_id, 0 as session_id, q.is_latest, q.employees_empty, q.employees_skip, q.geo_empty, q.geo_skip, q.industry_skip, 0 
 FROM "lv-prepackage-stage".lv_athena_stage.campaign_requirement_options q
 INNER JOIN "lv-prepackage-stage".lv_athena_stage.lists l on l.campaign_id = q.campaign_id
-INNER JOIN lvmodel_dev.m_pre_itbf_new_list_to_check j on j.list_id = l.id and j.status = 0
 where q.is_latest = cast(1 as boolean)
-	and j.list_id = ?
+	and l.id = ?
 ;
 
 
