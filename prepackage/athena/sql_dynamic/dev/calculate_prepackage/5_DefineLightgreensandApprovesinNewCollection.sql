@@ -1,4 +1,28 @@
 /* 5 - Define Lightgreens and Approves in New Collection */ 
+/*Create tmp table*/
+
+CREATE TABLE lvmodel_dev.m_pre_itbf_approved_new_collection_? (
+	cid string,
+	list_id bigint,
+	session_id int,
+	contact_id bigint,
+	title_approved int,
+	address_approved int,
+	employee_approved int,
+	contact_approved int,
+	status int
+)
+LOCATION 's3://lvprepackage/dev/iceberg/'
+TBLPROPERTIES (
+  'table_type'='iceberg',
+  'format'='parquet'
+)
+;
+
+
+
+
+
 /* Collect Approves and LG from History */
 
 insert into lvmodel_dev.m_pre_itbf_approved_new_collection_?
