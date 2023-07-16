@@ -2,7 +2,6 @@
 /*Create tmp table*/
 
 CREATE TABLE lvmodel_dev.m_pre_itbf_new_list_to_check_? (
-	cid string,
 	list_id int,
 	cid string,
 	status int,
