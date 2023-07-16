@@ -22,9 +22,3 @@ FROM "lv-prepackage-stage".lv_athena_stage.lists l
 INNER JOIN "lv-prepackage-stage".lv_athena_stage.campaigns ca on ca.id = l.campaign_id and ca.type = 2
 WHERE l.id = ?
 ;
-
-
-INSERT INTO lvmodel_dev.m_pre_itbf_new_list_to_check (cid, list_id, status, created_at)
-SELECT cid, list_id, CASE WHEN COUNT(*) > 0 THEN 0 ELSE -1 END, NOW() FROM lvmodel_dev.m_pre_itbf_new_list_to_check_?
-GROUP BY cid, list_id
-;
