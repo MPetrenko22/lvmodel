@@ -96,7 +96,7 @@ RES AS (
 			END value_h,
 			D.cid AS cid_d, RES_T.rule_type
 		FROM RES_T
-		INNER JOIN lvmodel_dev.m_pre_itbf_template_demands D ON D.cid = RES_T.cid and D.list_id = RES_T.list_id AND D.entity_type = RES_T.entity_type AND D.field = RES_T.attribute_name AND D.value = RES_T.value_h
+		INNER JOIN lvmodel_dev.m_pre_itbf_template_demands_? D ON D.cid = RES_T.cid and D.list_id = RES_T.list_id AND D.entity_type = RES_T.entity_type AND D.field = RES_T.attribute_name AND D.value = RES_T.value_h
 		LEFT JOIN lvmodel_dev.pre2_new_title_cm nt ON nt.title = RES_T.title AND RES_T.attribute_name IN ('job_level', 'job_area', 'job_function')
 		UNION ALL
 		SELECT a.cid, a.list_id, a.contact_id, H.entity_id, H.campaign_id, H.entity_type, H.ext_entity_id, H.attribute_name,  a.country AS value, a.cid AS cid_d, NULL
@@ -168,7 +168,7 @@ FIN AS (
 			IND.sub_industry_h
 		FROM lvmodel_dev.m_pre_itbf_contact_new_collection_? a
 		INNER JOIN SAT AS s1 ON a.cid = s1.cid AND a.list_id = s1.list_id AND s1.entity_type = 'contact' AND s1.new_contact_id = a.contact_id
-		INNER JOIN (SELECT DISTINCT cid, list_id, country, a_country, state, a_state, job_level, job_area, job_function  FROM lvmodel_dev.m_pre_itbf_campaign_demand_mask) DM1
+		INNER JOIN (SELECT DISTINCT cid, list_id, country, a_country, state, a_state, job_level, job_area, job_function  FROM lvmodel_dev.m_pre_itbf_campaign_demand_mask_?) DM1
 			ON DM1.cid = s1.cid AND DM1.list_id = s1.list_id and s1.entity_type = 'contact'
 				AND (DM1.country = 1 AND DM1.country = s1.country OR DM1.country = 0) 
 				AND (DM1.a_country = 1 AND DM1.a_country = s1.a_country OR DM1.a_country = 0)
@@ -178,7 +178,7 @@ FIN AS (
 				AND (DM1.job_area = 1 AND DM1.job_area = s1.job_area OR DM1.job_area = 0)
 				AND (DM1.job_function = 1 AND DM1.job_function = s1.job_function OR DM1.job_function = 0)			
 		INNER JOIN SAT AS s2 ON a.cid = s2.cid AND a.list_id = s2.list_id AND s2.entity_type = 'company' AND s2.new_contact_id = a.ext_company_id
-		INNER JOIN (SELECT DISTINCT cid, list_id, industry, a_industry, employee, a_employee  FROM lvmodel_dev.m_pre_itbf_campaign_demand_mask) DM2 
+		INNER JOIN (SELECT DISTINCT cid, list_id, industry, a_industry, employee, a_employee  FROM lvmodel_dev.m_pre_itbf_campaign_demand_mask_?) DM2 
 			ON DM2.cid = s2.cid AND DM2.list_id = s2.list_id AND s2.entity_type = 'company'
 				AND (DM2.industry = 1 AND DM2.industry = s2.industry OR DM2.industry = 0)
 				AND (DM2.industry = 1 AND DM2.industry = s2.sub_industry OR DM2.industry = 0)
