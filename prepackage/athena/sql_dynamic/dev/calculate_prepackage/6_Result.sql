@@ -166,7 +166,7 @@ FIN AS (
 			ROW_NUMBER()OVER(partition BY a.cid, a.list_id, a.contact_id ORDER BY s1.entity_id DESC) rn,
 			IND.industry_h,
 			IND.sub_industry_h
-		FROM lvmodel_dev.m_pre_itbf_contact_new_collection a
+		FROM lvmodel_dev.m_pre_itbf_contact_new_collection_? a
 		INNER JOIN SAT AS s1 ON a.cid = s1.cid AND a.list_id = s1.list_id AND s1.entity_type = 'contact' AND s1.new_contact_id = a.contact_id
 		INNER JOIN (SELECT DISTINCT cid, list_id, country, a_country, state, a_state, job_level, job_area, job_function  FROM lvmodel_dev.m_pre_itbf_campaign_demand_mask) DM1
 			ON DM1.cid = s1.cid AND DM1.list_id = s1.list_id and s1.entity_type = 'contact'
