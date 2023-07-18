@@ -14,7 +14,7 @@ WITH MP AS (
 		SELECT DISTINCT
 			ca.cid,
 			l.id AS list_id,
-			0 as session_id,,
+			0 as session_id,
 			ctc.id AS column_id,
 			ctc.parameter_id AS parameter_id,
 			ctc.field_id AS field_id,
