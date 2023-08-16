@@ -23,6 +23,7 @@ when matched then update set cid = s.cid, status = 0, id = (select max(case when
 ;
 
 
+/*Status when the error*/
 update lvmodel.m_pre_itbf_new_list_to_check
 set status = -1, id = (select max(case when c2.id is null then 0 else c2.id end) from lvmodel.m_pre_itbf_new_list_to_check c2) + 1 
 where status is null and list_id = ?
