@@ -21,12 +21,14 @@ insert into lvmodel.m_pre_itbf_final
 	prepackage_code,
 	rule_type
 )
+/*Select only approved contacts from new list to calculate*/
 WITH NC AS (
 		SELECT distinct a.contact_id, a.list_id, a.ext_contact_id, a.title, a.country, a.state, a.company_id, a.ext_company_id, a.employee, a.industry, a.cid
 		FROM lvmodel.m_pre_itbf_contact_new_collection a
 		inner join lvmodel.m_pre_itbf_approved_new_collection f on f.contact_id = a.contact_id and f.cid = a.cid and f.contact_approved = 1
 		where  a.list_id = ?
 ),
+/*Select  contacts which has records in history 1) equal to id and title 2) equal to title from special title list*/
 CC AS (
 		SELECT DISTINCT NC.cid, NC.list_id, NC.contact_id AS new_contact_id, h.entity_id, 'contact_id+title' AS rule_type, NULL AS title
 		FROM NC
@@ -37,16 +39,19 @@ CC AS (
 		INNER JOIN lvmodel.pre2_new_title_cm t ON t.title = NC.title
 		INNER JOIN lvmodel.m_pre_itbf_contact_history_table h ON h.entity_type = 'contact' AND h.attribute_name = 'title' AND h.value = NC.title
 ),
+/* Select contact's history from */
 RES_C AS (
 		SELECT CC.cid, CC.list_id, CC.new_contact_id, h.entity_id, h.campaign_id, h.entity_type, h.ext_entity_id, h.attribute_name, h.value AS value_h, CC.rule_type, CC.title
 		FROM CC
 		INNER JOIN lvmodel.m_pre_itbf_contact_history_table h ON CC.entity_id = h.entity_id  AND h.entity_type = 'contact'
 ),
+/*Select company's history from */
 RES_COM AS (
 		SELECT DISTINCT NC.cid, NC.list_id, NC.ext_company_id, h.entity_id, h.campaign_id, h.entity_type, h.ext_entity_id, h.attribute_name, h.value AS value_h, NULL AS rule_type, NULL AS title
 		FROM NC
 		INNER JOIN lvmodel.m_pre_itbf_contact_history_table h ON h.ext_entity_id = NC.ext_company_id AND h.entity_type = 'company'
 ),
+/*Join contacts and companies with history in joint array*/
 RES_T AS (
 		SELECT  *
 		FROM RES_C
@@ -54,7 +59,9 @@ RES_T AS (
 		SELECT *
 		FROM RES_COM
 ),
+/*Comparision attributes and mappings to be equal to report template demands and history*/
 RES AS (
+		/*History  equal to report template demand*/
 		SELECT DISTINCT 
 			RES_T.cid, RES_T.list_id, RES_T.new_contact_id, RES_T.entity_id, RES_T.campaign_id, RES_T.entity_type, RES_T.ext_entity_id, RES_T.attribute_name, 
 			CASE 
@@ -67,6 +74,7 @@ RES AS (
 		FROM RES_T
 		INNER JOIN lvmodel.m_pre_itbf_template_demands D ON D.cid = RES_T.cid and D.list_id = RES_T.list_id AND D.entity_type = RES_T.entity_type AND D.field = RES_T.attribute_name AND D.value = RES_T.value_h
 		LEFT JOIN lvmodel.pre2_new_title_cm nt ON nt.title = RES_T.title AND RES_T.attribute_name IN ('job_level', 'job_area', 'job_function')
+		/*New list equals to history*/
 		UNION ALL
 		SELECT a.cid, a.list_id, a.contact_id, H.entity_id, H.campaign_id, H.entity_type, H.ext_entity_id, H.attribute_name,  a.country AS value, a.cid AS cid_d, NULL
 		FROM NC a
@@ -85,6 +93,7 @@ RES AS (
 		FROM NC a
 		INNER JOIN RES_COM H ON  H.entity_type = 'company' AND H.ext_entity_id = a.ext_company_id AND H.attribute_name = 'a_employee' AND a.employee = H.value_h
 ),
+/*Detect mask whether attribute or mapping satisfy to report template demand list and history*/
 RES1 as (
 	select cid, list_id, new_contact_id, entity_id, campaign_id, entity_type, ext_entity_id, attribute_name, value_h, cid_d, rule_type,
 		if(attribute_name = 'country', 1, 0) as country,
@@ -101,6 +110,7 @@ RES1 as (
 		if(attribute_name = 'a_employee', 1, 0) as a_employee
 	from RES
 ),
+/*Detect mask whether contact or company as set of attributes and mappings satisfy to report template demand list and history*/
 SAT AS (
 		SELECT  cid, list_id, entity_type, entity_id, new_contact_id, max(rule_type) rule_type,
 				max(country) country, max(a_country) a_country, max(state) state, max(a_state) a_state, max(job_level) job_level, max(job_area) job_area, 
@@ -116,6 +126,7 @@ SAT AS (
 				) AA
 		GROUP BY AA.cid, AA.list_id, AA.entity_type, AA.entity_id, AA.new_contact_id
 ),
+/*Final detect contacts where attributes and mappings must be involved by report template*/
 FIN as (
 		SELECT 
 			a.cid, 
