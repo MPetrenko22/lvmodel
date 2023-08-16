@@ -6,6 +6,7 @@ delete from lvmodel.m_pre_itbf_contact_history_table
 
 /* Load contact history datea */
 insert into lvmodel.m_pre_itbf_contact_history_table
+/*Collect contacts with positive OV status*/
 WITH CC AS (
 		SELECT ca.cid, ca.type, c.campaign_id, c.email, c.id AS contact_id, c.contact_id AS ext_contact_id, ct.title, c.state,
 						com.id AS company_id, com.company_id AS ext_company_id
@@ -17,6 +18,7 @@ WITH CC AS (
 		WHERE ca.type = 2
 					AND c.ov_status_id IN (27,28,29,30,31) 
 ),
+/*Collect contacts report template mappings: job_level, job_area, job_function*/
 JF AS (
 		SELECT 	cid, type, campaign_id, email,  contact_id,  ext_contact_id, parameter, mapping
 		FROM 
@@ -33,6 +35,7 @@ JF AS (
 				INNER JOIN "lv-prepackage".app_lv.campaign_templates ss ON ss.id = rtm1.template_id
 					AND rtm1.history_order = 0) jlev
 ),
+/*Collect company report template mappings: industries, sub_industries*/
 IND AS (
 		SELECT DISTINCT c.company_id , c.ext_company_id, c.campaign_id,
 							ctm1.id AS param_id, par1.parameter , ctm1.mapping,
@@ -45,48 +48,49 @@ IND AS (
       	WHERE  par1.parameter in ('industry', 'sub_industry')
 				AND rtm1.history_order = 0
 )
+/*Insert contact values (above) into table*/
 SELECT CC.campaign_id, 'contact' AS entity_type, contact_id AS entity_id, ext_contact_id AS ext_entity_id,  'title' AS attribute_name, title AS value
 FROM CC
-/**/
+/*Insert contact's report template job mappings into table*/
 UNION 
 SELECT JF.campaign_id, 'contact' AS entity_type, contact_id, ext_contact_id,  parameter AS attribute_name, mapping AS value
 FROM JF
-/**/
+/*Insert contact's atribute country*/
 UNION
 select distinct CC.campaign_id, 'contact' AS entity_type, CC.contact_id, CC.ext_contact_id,  'a_country' AS attribute_name, co.short_name AS VALUE
 FROM CC
 INNER JOIN "lv-prepackage".app_lv.contact_countries s on s.contact_id  = CC.contact_id
 INNER JOIN "lv-prepackage".app_lv.countries co ON co.id = s.country_id
-/**/
+/*Insert contact's atribute state*/
 UNION
 SELECT distinct CC.campaign_id, 'contact' AS entity_type, CC.contact_id, CC.ext_contact_id,  'a_state' AS attribute_name, CC.state AS VALUE
 FROM CC
-/**/
+/*Insert company's report template mappings of industries, sub_industries*/
 UNION
 SELECT IND.campaign_id, 'company' AS entity_type, IND.company_id, IND.ext_company_id,  IND.parameter, IND.mapping AS VALUE 
 FROM IND
-/**/
+/*Insert company's atributes of industries*/
 UNION
 SELECT distinct CC.campaign_id, 'company' AS entity_type, CC.company_id, CC.ext_company_id, 'a_industry' AS attribute_name, i.name AS value
 FROM CC
 INNER JOIN "lv-prepackage".app_lv.companies com ON com.id = CC.company_id
 INNER JOIN "lv-prepackage".app_lv.company_industries ci ON ci.ref_id = com.industry_ref
 INNER JOIN "lv-prepackage".app_lv.industries i ON i.id = ci.industry_id
-/**/
+/*Insert company's atributes of  sub_industries*/
 UNION
 SELECT CC.campaign_id, 'company' AS entity_type, CC.company_id, CC.ext_company_id, 'a_sub_industry' AS attribute_name, i.name AS value
 FROM CC
 INNER JOIN "lv-prepackage".app_lv.companies com ON com.id = CC.company_id
 INNER JOIN "lv-prepackage".app_lv.company_industries ci ON ci.ref_id = com.industry_ref
 INNER JOIN "lv-prepackage".app_lv.industries i ON i.id = ci.sub_industry_id 
-/**/
+/*Insert company's atributes of employee size*/
 UNION
 SELECT CC.campaign_id, 'company' AS entity_type, CC.company_id, CC.ext_company_id, 'a_employee' AS attribute_name, CONCAT(cast(r."min" as varchar(20)), ';', cast(r."max"as varchar(20))) AS value
 FROM CC
 INNER JOIN "lv-prepackage".app_lv.companies com ON com.id = CC.company_id
 INNER JOIN "lv-prepackage".app_lv.company_ranges r ON r.ref_id = com.employees_ref AND r.type = 'employee'
 where r.min < 1000000000 and r.max < 1000000000
-/**/
+/*Insert company's report template employee size mapping*/
 union 
 SELECT 	distinct 	
 		ca.id AS campaign_id
@@ -111,6 +115,7 @@ inner join CC on CC.company_id = com0.id
 WHERE r."row_id" > 0  
 	AND dmc."title" IN ('employees')
 UNION
+/*Insert company's report template country and state mapping*/
 SELECT 
 	ca.id AS campaign_id
 	, 'contact' AS entity_type
@@ -155,11 +160,13 @@ delete from lvmodel.m_pre_itbf_pv_history
 
 /* Load PV history */
 insert into lvmodel.m_pre_itbf_pv_history
+/*Select al contacts from history table above*/
 with CON as (
 	select distinct ext_entity_id as ext_contact_id
 	from lvmodel.m_pre_itbf_contact_history_table h
 	where h.entity_type = 'contact'
 ),
+/*Collect all PV attributes fro contacts for last 180 days*/
 PV as (
 	select 
 		CON.ext_contact_id
@@ -207,22 +214,26 @@ delete from lvmodel.m_pre_itbf_approve_history
 /* Load Approve history */
 insert into lvmodel.m_pre_itbf_approve_history 
 with 
+/*Collect approves for title*/
 APR_TIT as (
 	select 'title' as approve_type, h.email_id, null as ext_company_id, h.date_approve, h.title_value, row_number()over(partition by h.email_id order by h.date_approve desc) rn
 	from "lv-prepackage".app_lv.contacts_approves_history h 
 	where h.title_value is not null
 		and date_add('day', 180, h.date_approve) > NOW()	
 ),
+/*Collect approves for states*/
 APR_ST as (
 	select 'state' as approve_type, h.email_id, null as ext_company_id, h.date_approve, h.state_value, row_number()over(partition by h.email_id order by h.date_approve desc) rn
 	from "lv-prepackage".app_lv.contacts_approves_history h 
 	where h.state_value is not null
 ),
+/*Collect approves for country*/
 APR_CN as (
 	select 'country' as approve_type, h.email_id, null as ext_company_id, h.date_approve, c.short_name as country_value, row_number()over(partition by h.email_id order by h.date_approve desc) rn
 	from "lv-prepackage".app_lv.contacts_approves_history h
 	inner join "lv-prepackage".app_lv.countries c on cast(c.id as varchar(100)) = h.country_value
 ),
+/*Collect approves for employees*/
 APR_EMP as (
 	select 'employee' as approve_type, null email_id, h.ext_company_id as ext_company_id, h.date_approve, 
 			concat(cast(h.employees_min_value as varchar(20)),';', cast(h.employees_max_value as varchar(20))) as employee_value, 
