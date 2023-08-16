@@ -6,6 +6,7 @@ insert into lvmodel.m_pre_itbf_approved_new_collection
 (
 	cid, list_id, session_id, contact_id, title_approved, address_approved, employee_approved
 )
+/*Title lightgreen*/
 with LG_TIT as (
 	select nc.contact_id , nc.ext_contact_id , c.previous_ov_date 
 	from lvmodel.m_pre_itbf_contact_new_collection nc
@@ -14,12 +15,14 @@ with LG_TIT as (
 		and c.previous_ov_date > DATE('2001-01-01')
 		and date_add('day', 180, c.previous_ov_date) > NOW()
 ),
+/*Title approve*/
 APR_TIT as (
 	select nc.contact_id , nc.ext_contact_id , h.date_approve as title_date_approve
 	from lvmodel.m_pre_itbf_contact_new_collection nc
 	inner join lvmodel.m_pre_itbf_approve_history h on h.email_id = nc.email_id and h.approve_type = 'title' and h.value = nc.title 
 	where  nc.list_id = ?
 ),
+/*Address lightgreen*/
 LG_ADR as (
 	select nc.contact_id , nc.ext_contact_id , c.address_date
 	from lvmodel.m_pre_itbf_contact_new_collection nc
@@ -27,6 +30,7 @@ LG_ADR as (
 	where  nc.list_id = ?
 		and c.address_date > DATE('2001-01-01')
 ),
+/*Address approve*/
 APR_ADR as (
 	select nc.contact_id , nc.ext_contact_id , h.date_approve as address_date_approve
 	from lvmodel.m_pre_itbf_contact_new_collection nc
@@ -34,6 +38,7 @@ APR_ADR as (
 	inner join lvmodel.m_pre_itbf_approve_history h2 on h2.email_id = nc.email_id and h2.approve_type = 'state' and h2.value = nc.state 
 	where  nc.list_id = ?
 ),
+/*Employee lightgreen*/
 LG_EMP as (
 	select nc.contact_id , nc.ext_contact_id , com.id as company_id, com.employee_date
 	from lvmodel.m_pre_itbf_contact_new_collection nc
@@ -43,6 +48,7 @@ LG_EMP as (
 		and com.employee_date > DATE('2001-01-01')
 		and date_add('day', 360, com.employee_date)  > NOW()
 ),
+/*Employee approve*/
 APR_EMP as (
 	select nc.contact_id , nc.ext_contact_id , h.date_approve as employee_date_approve
 	from lvmodel.m_pre_itbf_contact_new_collection nc
