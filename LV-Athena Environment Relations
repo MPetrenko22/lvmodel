@@ -1,0 +1,7 @@
+Environment  | LV                                                                             | Athena	
+             ----------------------------------------------------------------------------------------------------------------
+             | Server                                                      | DB               | Server        |	DB
+-----------------------------------------------------------------------------------------------------------------------------
+DEV          | infusemedia-staging.cqc9owfu0wwt.us-east-1.rds.amazonaws.com| lv_athena_stage  |	US-EAST-1     |	lvmodel_dev
+TEST(STAGE)  | infusemedia-staging.cqc9owfu0wwt.us-east-1.rds.amazonaws.com| lv_stage_hotfix  |	US-EAST-1     |	lvmodel_stage
+PRODUCTIVE   | --                                                          |	app_lv          |	EU-CENTRAL-1  |	lvmodel
