@@ -27,7 +27,7 @@ JF AS (
 				INNER  JOIN  "lv-prepackage-stage".lv_stage_hotfix.report_template_mappings rtm1 on rtm1.mapping_id = ctm1.id 
 				INNER  JOIN  "lv-prepackage-stage".lv_stage_hotfix.campaign_template_columns col1 on col1.id = rtm1.template_column_id
 				INNER  JOIN  "lv-prepackage-stage".lv_stage_hotfix.campaign_template_parameters par1 on col1.parameter_id = par1.id
-				INNER  JOIN CC c ON c.contact_id = rtm1.entity_id AND rtm1.entity_type = 'App\Contact'
+				INNER  JOIN CC c ON c.contact_id = rtm1.entity_id AND rtm1.entity_type = 'App\Models\Contact'
 				INNER JOIN "lv-prepackage-stage".lv_stage_hotfix.contact_titles t ON t.contact_id = c.contact_id
 				INNER JOIN "lv-prepackage-stage".lv_stage_hotfix.campaigns ca ON c.campaign_id = ca.id
 				INNER JOIN "lv-prepackage-stage".lv_stage_hotfix.campaign_templates ss ON ss.id = rtm1.template_id
@@ -41,7 +41,7 @@ IND AS (
 		INNER  JOIN  "lv-prepackage-stage".lv_stage_hotfix.report_template_mappings rtm1 on rtm1.mapping_id = ctm1.id 
 		INNER  JOIN  "lv-prepackage-stage".lv_stage_hotfix.campaign_template_columns col1 on col1.id = rtm1.template_column_id
 		INNER  JOIN  "lv-prepackage-stage".lv_stage_hotfix.campaign_template_parameters par1 on col1.parameter_id = par1.id
-		INNER  JOIN CC c ON c.company_id = rtm1.entity_id AND rtm1.entity_type = 'App\Company'
+		INNER  JOIN CC c ON c.company_id = rtm1.entity_id AND rtm1.entity_type = 'App\Models\Company'
       	WHERE  par1.parameter in ('industry', 'sub_industry')
 				AND rtm1.history_order = 0
 )
