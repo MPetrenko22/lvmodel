@@ -1,12 +1,10 @@
 
 /* Clean contact history table before new load */
-delete from lvmodel.m_pre_itbf_contact_history_table
-;
+delete from lvmodel.m_pre_itbf_contact_history_table;
 
 
 /* Load contact history datea */
 insert into lvmodel.m_pre_itbf_contact_history_table
-/*Collect contacts with positive OV status*/
 WITH CC AS (
 		SELECT ca.cid, ca.type, c.campaign_id, c.email, c.id AS contact_id, c.contact_id AS ext_contact_id, ct.title, c.state,
 						com.id AS company_id, com.company_id AS ext_company_id
@@ -18,7 +16,6 @@ WITH CC AS (
 		WHERE ca.type = 2
 					AND c.ov_status_id IN (27,28,29,30,31) 
 ),
-/*Collect contacts report template mappings: job_level, job_area, job_function*/
 JF AS (
 		SELECT 	cid, type, campaign_id, email,  contact_id,  ext_contact_id, parameter, mapping
 		FROM 
@@ -35,7 +32,6 @@ JF AS (
 				INNER JOIN "lv-prepackage".app_lv.campaign_templates ss ON ss.id = rtm1.template_id
 					AND rtm1.history_order = 0) jlev
 ),
-/*Collect company report template mappings: industries, sub_industries*/
 IND AS (
 		SELECT DISTINCT c.company_id , c.ext_company_id, c.campaign_id,
 							ctm1.id AS param_id, par1.parameter , ctm1.mapping,
@@ -48,97 +44,149 @@ IND AS (
       	WHERE  par1.parameter in ('industry', 'sub_industry')
 				AND rtm1.history_order = 0
 )
-/*Insert contact values (above) into table*/
 SELECT CC.campaign_id, 'contact' AS entity_type, contact_id AS entity_id, ext_contact_id AS ext_entity_id,  'title' AS attribute_name, title AS value
 FROM CC
-/*Insert contact's report template job mappings into table*/
-UNION 
+UNION ALL
 SELECT JF.campaign_id, 'contact' AS entity_type, contact_id, ext_contact_id,  parameter AS attribute_name, mapping AS value
 FROM JF
-/*Insert contact's atribute country*/
-UNION
+UNION ALL
 select distinct CC.campaign_id, 'contact' AS entity_type, CC.contact_id, CC.ext_contact_id,  'a_country' AS attribute_name, co.short_name AS VALUE
 FROM CC
 INNER JOIN "lv-prepackage".app_lv.contact_countries s on s.contact_id  = CC.contact_id
 INNER JOIN "lv-prepackage".app_lv.countries co ON co.id = s.country_id
-/*Insert contact's atribute state*/
-UNION
+UNION ALL
 SELECT distinct CC.campaign_id, 'contact' AS entity_type, CC.contact_id, CC.ext_contact_id,  'a_state' AS attribute_name, CC.state AS VALUE
 FROM CC
-/*Insert company's report template mappings of industries, sub_industries*/
-UNION
+UNION ALL
 SELECT IND.campaign_id, 'company' AS entity_type, IND.company_id, IND.ext_company_id,  IND.parameter, IND.mapping AS VALUE 
 FROM IND
-/*Insert company's atributes of industries*/
-UNION
+UNION ALL
 SELECT distinct CC.campaign_id, 'company' AS entity_type, CC.company_id, CC.ext_company_id, 'a_industry' AS attribute_name, i.name AS value
 FROM CC
 INNER JOIN "lv-prepackage".app_lv.companies com ON com.id = CC.company_id
 INNER JOIN "lv-prepackage".app_lv.company_industries ci ON ci.ref_id = com.industry_ref
 INNER JOIN "lv-prepackage".app_lv.industries i ON i.id = ci.industry_id
-/*Insert company's atributes of  sub_industries*/
-UNION
+UNION ALL
 SELECT CC.campaign_id, 'company' AS entity_type, CC.company_id, CC.ext_company_id, 'a_sub_industry' AS attribute_name, i.name AS value
 FROM CC
 INNER JOIN "lv-prepackage".app_lv.companies com ON com.id = CC.company_id
 INNER JOIN "lv-prepackage".app_lv.company_industries ci ON ci.ref_id = com.industry_ref
 INNER JOIN "lv-prepackage".app_lv.industries i ON i.id = ci.sub_industry_id 
-/*Insert company's atributes of employee size*/
-UNION
+UNION ALL
 SELECT CC.campaign_id, 'company' AS entity_type, CC.company_id, CC.ext_company_id, 'a_employee' AS attribute_name, CONCAT(cast(r."min" as varchar(20)), ';', cast(r."max"as varchar(20))) AS value
 FROM CC
 INNER JOIN "lv-prepackage".app_lv.companies com ON com.id = CC.company_id
 INNER JOIN "lv-prepackage".app_lv.company_ranges r ON r.ref_id = com.employees_ref AND r.type = 'employee'
 where r.min < 1000000000 and r.max < 1000000000
-/*Insert company's report template employee size mapping*/
-union 
-SELECT 	distinct 	
+;
+
+
+
+
+
+
+delete from lvmodel.m_pre_itbf_data_mapped_history
+;
+
+
+delete from lvmodel.m_pre_itbf_data_mapped_history_t1
+;
+delete from lvmodel.m_pre_itbf_data_mapped_history_t2
+;
+
+
+
+
+insert into lvmodel.m_pre_itbf_data_mapped_history_t1
+SELECT 	
 		ca.id AS campaign_id
+		, l3.parent_id
+		, l3.id as list_id
+FROM "lv-prepackage".app_lv.campaigns ca
+INNER JOIN "lv-prepackage".app_lv.lists l3 ON l3."campaign_id" = ca."id" AND l3."local_type" = 3 
+where ca.type = 2
+;
+
+
+
+insert into lvmodel.m_pre_itbf_data_mapped_history_t2
+SELECT 	
+		t1.campaign_id
+		, REPLACE(cast(JSON_EXTRACT(r.cells, CONCAT('$.', cast(dmc.column_id as varchar(10)), '.value') ) as varchar(255)), '"', '') AS "value"
+		, r."row_id"
+		, dmc."title"
+		, t1.parent_id
+FROM   lvmodel.m_pre_itbf_data_mapped_history_t1 t1
+INNER JOIN "lv-prepackage".app_lv.list_report_data_mapped lr  		ON lr."list_id" = t1.list_id
+INNER JOIN "lv-prepackage".app_lv.data_mapped_columns dmc     		ON dmc."sheet_id" = lr."data_mapped_sheet_id"        
+INNER JOIN "lv-prepackage".app_lv.data_mapped_rows r          		ON r."sheet_id" = lr."data_mapped_sheet_id" 
+where  dmc."title" IN ('employees','country', 'state')
+;
+
+
+
+insert into lvmodel.m_pre_itbf_data_mapped_history
+SELECT 	
+		t2.campaign_id
+		, f."field" AS attribute_name
+		, t2.value
+		, t2.row_id
+		, t2.title
+		, t2.parent_id
+from lvmodel.m_pre_itbf_data_mapped_history_t2 t2
+INNER JOIN "lv-prepackage".app_lv.campaign_template_columns rtm1    ON rtm1."campaign_id" = t2.campaign_id
+INNER JOIN "lv-prepackage".app_lv.campaign_template_parameters par  ON par."id" = rtm1."parameter_id" AND par."parameter" = t2.title
+INNER JOIN "lv-prepackage".app_lv.campaign_template_fields f        ON f."id" = rtm1."field_id"
+where  t2."title" IN ('employees','country', 'state')
+;
+
+
+
+
+
+
+
+
+insert into lvmodel.m_pre_itbf_contact_history_table
+SELECT 	distinct 	
+		dm.campaign_id
 		, 'company' AS entity_type
 		, com0.id AS entiry_id
 		, com0.company_id AS ext_entity_id
-		, f."field" AS attribute_name
-		, REPLACE(cast(JSON_EXTRACT(r.cells, CONCAT('$.', cast(dmc.column_id as varchar(10)), '.value') ) as varchar(255)), '"', '') AS "value"
-FROM "lv-prepackage".app_lv.campaigns ca
-INNER JOIN "lv-prepackage".app_lv.lists l3                    ON l3."campaign_id" = ca."id" AND l3."local_type" = 3     
-INNER JOIN "lv-prepackage".app_lv.list_report_data_mapped lr  ON lr."list_id" = l3."id"
-INNER JOIN "lv-prepackage".app_lv.data_mapped_columns dmc     ON dmc."sheet_id" = lr."data_mapped_sheet_id"        
-INNER JOIN "lv-prepackage".app_lv.data_mapped_rows r          ON r."sheet_id" = lr."data_mapped_sheet_id"           
-INNER JOIN "lv-prepackage".app_lv.campaign_template_columns rtm1    ON rtm1."campaign_id" = ca."id"
-INNER JOIN "lv-prepackage".app_lv.campaign_template_parameters par  ON par."id" = rtm1."parameter_id" AND par."parameter" = dmc."title"
-INNER JOIN "lv-prepackage".app_lv.campaign_template_fields f        ON f."id" = rtm1."field_id"                     
-INNER JOIN "lv-prepackage".app_lv.contacts c3 ON c3.id = r."row_id"
-INNER JOIN "lv-prepackage".app_lv.lists l0 ON l0.id = l3.parent_id AND l0.local_type = 0
+		, dm.attribute_name
+		, dm."value"
+FROM lvmodel.m_pre_itbf_data_mapped_history dm                   
+INNER JOIN "lv-prepackage".app_lv.contacts c3 ON c3.id = dm."row_id"
+INNER JOIN "lv-prepackage".app_lv.lists l0 ON l0.id = dm.parent_id AND l0.local_type = 0
 INNER JOIN "lv-prepackage".app_lv.contacts c0 ON c0.list_id = l0.id AND c0.email_id = c3.email_id
 INNER JOIN "lv-prepackage".app_lv.companies com0 ON com0.id = c0.company_id
-inner join CC on CC.company_id = com0.id
-WHERE r."row_id" > 0  
-	AND dmc."title" IN ('employees')
-UNION
-/*Insert company's report template country and state mapping*/
+WHERE dm."row_id" > 0  
+	AND dm."title" IN ('employees')
+	AND c0.ov_status_id IN (27,28,29,30,31)
+;
+
+
+
+
+
+
+insert into lvmodel.m_pre_itbf_contact_history_table
 SELECT 
-	ca.id AS campaign_id
+	dm.campaign_id
 	, 'contact' AS entity_type
 	, c0.id AS entity_id
 	, c0.contact_id AS ext_entity_id
-	, f.field AS attribute_name
-	, REPLACE(cast(JSON_EXTRACT(r.cells, CONCAT('$.', cast(dmc.column_id as varchar(10)), '.value') ) as varchar(255)), '"', '') AS value
-FROM "lv-prepackage".app_lv.campaigns ca
-INNER JOIN "lv-prepackage".app_lv.lists l3                    ON l3.campaign_id = ca.id AND l3.local_type = 3     
-INNER JOIN "lv-prepackage".app_lv.list_report_data_mapped lr  ON lr.list_id = l3.id
-INNER JOIN "lv-prepackage".app_lv.data_mapped_columns dmc     ON dmc.sheet_id = lr.data_mapped_sheet_id        
-INNER JOIN "lv-prepackage".app_lv.data_mapped_rows r          ON r.sheet_id = lr.data_mapped_sheet_id          
-INNER JOIN "lv-prepackage".app_lv.campaign_template_columns rtm1    ON rtm1.campaign_id = ca.id
-INNER JOIN "lv-prepackage".app_lv.campaign_template_parameters par  ON par.id = rtm1.parameter_id AND par.parameter = dmc.title
-INNER JOIN "lv-prepackage".app_lv.campaign_template_fields f        ON f.id = rtm1.field_id                   
-INNER JOIN "lv-prepackage".app_lv.contacts c3 ON c3.id = r.row_id
-INNER JOIN "lv-prepackage".app_lv.lists l0 ON l0.id = l3.parent_id AND l0.local_type = 0
+	, dm.attribute_name
+	, dm.value
+FROM lvmodel.m_pre_itbf_data_mapped_history dm                   
+INNER JOIN "lv-prepackage".app_lv.contacts c3 ON c3.id = dm.row_id
+INNER JOIN "lv-prepackage".app_lv.lists l0 ON l0.id = dm.parent_id AND l0.local_type = 0
 INNER JOIN "lv-prepackage".app_lv.contacts c0 ON c0.list_id = l0.id AND c0.email_id = c3.email_id
-INNER JOIN CC ON CC.contact_id = c0.id
-WHERE
-	r.row_id > 0
-	AND dmc.title IN ('country', 'state')
+where  dm."row_id" > 0  
+	AND dm.title IN ('country', 'state')
+	AND c0.ov_status_id IN (27,28,29,30,31) 
 ;
+
 
 
 
